@@ -45,6 +45,12 @@ O projeto usa **Riverpod** e **persistência na nuvem com Supabase**.
 
 ### 1. Instale as dependências:
 ```sh
+flutter pub add supabase_flutter
+flutter pub add flutter_riverpod
+flutter pub add qr_flutter
+flutter pub add mobile_scanner
+
+
 flutter pub get
 flutter run
 flutter analyze
