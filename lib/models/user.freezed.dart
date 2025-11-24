@@ -25,9 +25,12 @@ mixin _$User {
   String get email => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get phone => throw _privateConstructorUsedError;
+  @JsonKey(name: 'photo_url')
   String get photoUrl => throw _privateConstructorUsedError;
   String get department => throw _privateConstructorUsedError;
+  @JsonKey(name: 'created_at')
   DateTime get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'updated_at')
   DateTime get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this User to a JSON map.
@@ -49,10 +52,10 @@ abstract class $UserCopyWith<$Res> {
     String email,
     String name,
     String phone,
-    String photoUrl,
+    @JsonKey(name: 'photo_url') String photoUrl,
     String department,
-    DateTime createdAt,
-    DateTime updatedAt,
+    @JsonKey(name: 'created_at') DateTime createdAt,
+    @JsonKey(name: 'updated_at') DateTime updatedAt,
   });
 }
 
@@ -133,10 +136,10 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
     String email,
     String name,
     String phone,
-    String photoUrl,
+    @JsonKey(name: 'photo_url') String photoUrl,
     String department,
-    DateTime createdAt,
-    DateTime updatedAt,
+    @JsonKey(name: 'created_at') DateTime createdAt,
+    @JsonKey(name: 'updated_at') DateTime updatedAt,
   });
 }
 
@@ -208,10 +211,10 @@ class _$UserImpl implements _User {
     required this.email,
     required this.name,
     required this.phone,
-    this.photoUrl = '',
+    @JsonKey(name: 'photo_url') this.photoUrl = '',
     this.department = '',
-    required this.createdAt,
-    required this.updatedAt,
+    @JsonKey(name: 'created_at') required this.createdAt,
+    @JsonKey(name: 'updated_at') required this.updatedAt,
   });
 
   factory _$UserImpl.fromJson(Map<String, dynamic> json) =>
@@ -226,14 +229,16 @@ class _$UserImpl implements _User {
   @override
   final String phone;
   @override
-  @JsonKey()
+  @JsonKey(name: 'photo_url')
   final String photoUrl;
   @override
   @JsonKey()
   final String department;
   @override
+  @JsonKey(name: 'created_at')
   final DateTime createdAt;
   @override
+  @JsonKey(name: 'updated_at')
   final DateTime updatedAt;
 
   @override
@@ -294,10 +299,10 @@ abstract class _User implements User {
     required final String email,
     required final String name,
     required final String phone,
-    final String photoUrl,
+    @JsonKey(name: 'photo_url') final String photoUrl,
     final String department,
-    required final DateTime createdAt,
-    required final DateTime updatedAt,
+    @JsonKey(name: 'created_at') required final DateTime createdAt,
+    @JsonKey(name: 'updated_at') required final DateTime updatedAt,
   }) = _$UserImpl;
 
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
@@ -311,12 +316,15 @@ abstract class _User implements User {
   @override
   String get phone;
   @override
+  @JsonKey(name: 'photo_url')
   String get photoUrl;
   @override
   String get department;
   @override
+  @JsonKey(name: 'created_at')
   DateTime get createdAt;
   @override
+  @JsonKey(name: 'updated_at')
   DateTime get updatedAt;
 
   /// Create a copy of User

@@ -22,15 +22,23 @@ Reservation _$ReservationFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Reservation {
   String get id => throw _privateConstructorUsedError;
+  @JsonKey(name: 'room_id')
   String get roomId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'user_id')
   String get userId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'start_date')
   DateTime get startDate => throw _privateConstructorUsedError;
+  @JsonKey(name: 'end_date')
+  @Assert('startDate.isBefore(endDate)', 'Start date must be before end date')
   DateTime get endDate => throw _privateConstructorUsedError;
+  @Assert('attendees > 0', 'Attendees must be greater than 0')
   int get attendees => throw _privateConstructorUsedError;
   String get purpose => throw _privateConstructorUsedError;
   ReservationStatus get status => throw _privateConstructorUsedError;
   String get notes => throw _privateConstructorUsedError;
+  @JsonKey(name: 'created_at')
   DateTime get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'updated_at')
   DateTime get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this Reservation to a JSON map.
@@ -52,16 +60,18 @@ abstract class $ReservationCopyWith<$Res> {
   @useResult
   $Res call({
     String id,
-    String roomId,
-    String userId,
-    DateTime startDate,
+    @JsonKey(name: 'room_id') String roomId,
+    @JsonKey(name: 'user_id') String userId,
+    @JsonKey(name: 'start_date') DateTime startDate,
+    @JsonKey(name: 'end_date')
+    @Assert('startDate.isBefore(endDate)', 'Start date must be before end date')
     DateTime endDate,
-    int attendees,
+    @Assert('attendees > 0', 'Attendees must be greater than 0') int attendees,
     String purpose,
     ReservationStatus status,
     String notes,
-    DateTime createdAt,
-    DateTime updatedAt,
+    @JsonKey(name: 'created_at') DateTime createdAt,
+    @JsonKey(name: 'updated_at') DateTime updatedAt,
   });
 }
 
@@ -155,16 +165,18 @@ abstract class _$$ReservationImplCopyWith<$Res>
   @useResult
   $Res call({
     String id,
-    String roomId,
-    String userId,
-    DateTime startDate,
+    @JsonKey(name: 'room_id') String roomId,
+    @JsonKey(name: 'user_id') String userId,
+    @JsonKey(name: 'start_date') DateTime startDate,
+    @JsonKey(name: 'end_date')
+    @Assert('startDate.isBefore(endDate)', 'Start date must be before end date')
     DateTime endDate,
-    int attendees,
+    @Assert('attendees > 0', 'Attendees must be greater than 0') int attendees,
     String purpose,
     ReservationStatus status,
     String notes,
-    DateTime createdAt,
-    DateTime updatedAt,
+    @JsonKey(name: 'created_at') DateTime createdAt,
+    @JsonKey(name: 'updated_at') DateTime updatedAt,
   });
 }
 
@@ -250,16 +262,19 @@ class __$$ReservationImplCopyWithImpl<$Res>
 class _$ReservationImpl implements _Reservation {
   const _$ReservationImpl({
     required this.id,
-    required this.roomId,
-    required this.userId,
-    required this.startDate,
+    @JsonKey(name: 'room_id') required this.roomId,
+    @JsonKey(name: 'user_id') required this.userId,
+    @JsonKey(name: 'start_date') required this.startDate,
+    @JsonKey(name: 'end_date')
+    @Assert('startDate.isBefore(endDate)', 'Start date must be before end date')
     required this.endDate,
+    @Assert('attendees > 0', 'Attendees must be greater than 0')
     required this.attendees,
     required this.purpose,
     this.status = ReservationStatus.pending,
     this.notes = '',
-    required this.createdAt,
-    required this.updatedAt,
+    @JsonKey(name: 'created_at') required this.createdAt,
+    @JsonKey(name: 'updated_at') required this.updatedAt,
   });
 
   factory _$ReservationImpl.fromJson(Map<String, dynamic> json) =>
@@ -268,14 +283,20 @@ class _$ReservationImpl implements _Reservation {
   @override
   final String id;
   @override
+  @JsonKey(name: 'room_id')
   final String roomId;
   @override
+  @JsonKey(name: 'user_id')
   final String userId;
   @override
+  @JsonKey(name: 'start_date')
   final DateTime startDate;
   @override
+  @JsonKey(name: 'end_date')
+  @Assert('startDate.isBefore(endDate)', 'Start date must be before end date')
   final DateTime endDate;
   @override
+  @Assert('attendees > 0', 'Attendees must be greater than 0')
   final int attendees;
   @override
   final String purpose;
@@ -286,8 +307,10 @@ class _$ReservationImpl implements _Reservation {
   @JsonKey()
   final String notes;
   @override
+  @JsonKey(name: 'created_at')
   final DateTime createdAt;
   @override
+  @JsonKey(name: 'updated_at')
   final DateTime updatedAt;
 
   @override
@@ -351,16 +374,19 @@ class _$ReservationImpl implements _Reservation {
 abstract class _Reservation implements Reservation {
   const factory _Reservation({
     required final String id,
-    required final String roomId,
-    required final String userId,
-    required final DateTime startDate,
+    @JsonKey(name: 'room_id') required final String roomId,
+    @JsonKey(name: 'user_id') required final String userId,
+    @JsonKey(name: 'start_date') required final DateTime startDate,
+    @JsonKey(name: 'end_date')
+    @Assert('startDate.isBefore(endDate)', 'Start date must be before end date')
     required final DateTime endDate,
+    @Assert('attendees > 0', 'Attendees must be greater than 0')
     required final int attendees,
     required final String purpose,
     final ReservationStatus status,
     final String notes,
-    required final DateTime createdAt,
-    required final DateTime updatedAt,
+    @JsonKey(name: 'created_at') required final DateTime createdAt,
+    @JsonKey(name: 'updated_at') required final DateTime updatedAt,
   }) = _$ReservationImpl;
 
   factory _Reservation.fromJson(Map<String, dynamic> json) =
@@ -369,14 +395,20 @@ abstract class _Reservation implements Reservation {
   @override
   String get id;
   @override
+  @JsonKey(name: 'room_id')
   String get roomId;
   @override
+  @JsonKey(name: 'user_id')
   String get userId;
   @override
+  @JsonKey(name: 'start_date')
   DateTime get startDate;
   @override
+  @JsonKey(name: 'end_date')
+  @Assert('startDate.isBefore(endDate)', 'Start date must be before end date')
   DateTime get endDate;
   @override
+  @Assert('attendees > 0', 'Attendees must be greater than 0')
   int get attendees;
   @override
   String get purpose;
@@ -385,8 +417,10 @@ abstract class _Reservation implements Reservation {
   @override
   String get notes;
   @override
+  @JsonKey(name: 'created_at')
   DateTime get createdAt;
   @override
+  @JsonKey(name: 'updated_at')
   DateTime get updatedAt;
 
   /// Create a copy of Reservation

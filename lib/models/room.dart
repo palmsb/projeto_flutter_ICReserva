@@ -9,13 +9,14 @@ class Room with _$Room {
     required String id,
     required String name,
     required String description,
+    @Assert('capacity > 0', 'Capacity must be greater than 0')
     required int capacity,
     required String location,
-    @Default('') String photoUrl,
+    @JsonKey(name: 'photo_url') @Default('') String photoUrl,
     @Default([]) List<String> amenities,
-    required bool isActive,
-    required DateTime createdAt,
-    required DateTime updatedAt,
+    @JsonKey(name: 'is_active') required bool isActive,
+    @JsonKey(name: 'created_at') required DateTime createdAt,
+    @JsonKey(name: 'updated_at') required DateTime updatedAt,
   }) = _Room;
 
   factory Room.fromJson(Map<String, dynamic> json) => _$RoomFromJson(json);

@@ -10,10 +10,10 @@ class User with _$User {
     required String email,
     required String name,
     required String phone,
-    @Default('') String photoUrl,
+    @JsonKey(name: 'photo_url') @Default('') String photoUrl,
     @Default('') String department,
-    required DateTime createdAt,
-    required DateTime updatedAt,
+    @JsonKey(name: 'created_at') required DateTime createdAt,
+    @JsonKey(name: 'updated_at') required DateTime updatedAt,
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

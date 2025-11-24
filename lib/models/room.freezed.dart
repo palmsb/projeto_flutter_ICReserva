@@ -24,12 +24,17 @@ mixin _$Room {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
+  @Assert('capacity > 0', 'Capacity must be greater than 0')
   int get capacity => throw _privateConstructorUsedError;
   String get location => throw _privateConstructorUsedError;
+  @JsonKey(name: 'photo_url')
   String get photoUrl => throw _privateConstructorUsedError;
   List<String> get amenities => throw _privateConstructorUsedError;
+  @JsonKey(name: 'is_active')
   bool get isActive => throw _privateConstructorUsedError;
+  @JsonKey(name: 'created_at')
   DateTime get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'updated_at')
   DateTime get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this Room to a JSON map.
@@ -50,13 +55,13 @@ abstract class $RoomCopyWith<$Res> {
     String id,
     String name,
     String description,
-    int capacity,
+    @Assert('capacity > 0', 'Capacity must be greater than 0') int capacity,
     String location,
-    String photoUrl,
+    @JsonKey(name: 'photo_url') String photoUrl,
     List<String> amenities,
-    bool isActive,
-    DateTime createdAt,
-    DateTime updatedAt,
+    @JsonKey(name: 'is_active') bool isActive,
+    @JsonKey(name: 'created_at') DateTime createdAt,
+    @JsonKey(name: 'updated_at') DateTime updatedAt,
   });
 }
 
@@ -146,13 +151,13 @@ abstract class _$$RoomImplCopyWith<$Res> implements $RoomCopyWith<$Res> {
     String id,
     String name,
     String description,
-    int capacity,
+    @Assert('capacity > 0', 'Capacity must be greater than 0') int capacity,
     String location,
-    String photoUrl,
+    @JsonKey(name: 'photo_url') String photoUrl,
     List<String> amenities,
-    bool isActive,
-    DateTime createdAt,
-    DateTime updatedAt,
+    @JsonKey(name: 'is_active') bool isActive,
+    @JsonKey(name: 'created_at') DateTime createdAt,
+    @JsonKey(name: 'updated_at') DateTime updatedAt,
   });
 }
 
@@ -233,13 +238,14 @@ class _$RoomImpl implements _Room {
     required this.id,
     required this.name,
     required this.description,
+    @Assert('capacity > 0', 'Capacity must be greater than 0')
     required this.capacity,
     required this.location,
-    this.photoUrl = '',
+    @JsonKey(name: 'photo_url') this.photoUrl = '',
     final List<String> amenities = const [],
-    required this.isActive,
-    required this.createdAt,
-    required this.updatedAt,
+    @JsonKey(name: 'is_active') required this.isActive,
+    @JsonKey(name: 'created_at') required this.createdAt,
+    @JsonKey(name: 'updated_at') required this.updatedAt,
   }) : _amenities = amenities;
 
   factory _$RoomImpl.fromJson(Map<String, dynamic> json) =>
@@ -252,11 +258,12 @@ class _$RoomImpl implements _Room {
   @override
   final String description;
   @override
+  @Assert('capacity > 0', 'Capacity must be greater than 0')
   final int capacity;
   @override
   final String location;
   @override
-  @JsonKey()
+  @JsonKey(name: 'photo_url')
   final String photoUrl;
   final List<String> _amenities;
   @override
@@ -268,10 +275,13 @@ class _$RoomImpl implements _Room {
   }
 
   @override
+  @JsonKey(name: 'is_active')
   final bool isActive;
   @override
+  @JsonKey(name: 'created_at')
   final DateTime createdAt;
   @override
+  @JsonKey(name: 'updated_at')
   final DateTime updatedAt;
 
   @override
@@ -341,13 +351,14 @@ abstract class _Room implements Room {
     required final String id,
     required final String name,
     required final String description,
+    @Assert('capacity > 0', 'Capacity must be greater than 0')
     required final int capacity,
     required final String location,
-    final String photoUrl,
+    @JsonKey(name: 'photo_url') final String photoUrl,
     final List<String> amenities,
-    required final bool isActive,
-    required final DateTime createdAt,
-    required final DateTime updatedAt,
+    @JsonKey(name: 'is_active') required final bool isActive,
+    @JsonKey(name: 'created_at') required final DateTime createdAt,
+    @JsonKey(name: 'updated_at') required final DateTime updatedAt,
   }) = _$RoomImpl;
 
   factory _Room.fromJson(Map<String, dynamic> json) = _$RoomImpl.fromJson;
@@ -359,18 +370,23 @@ abstract class _Room implements Room {
   @override
   String get description;
   @override
+  @Assert('capacity > 0', 'Capacity must be greater than 0')
   int get capacity;
   @override
   String get location;
   @override
+  @JsonKey(name: 'photo_url')
   String get photoUrl;
   @override
   List<String> get amenities;
   @override
+  @JsonKey(name: 'is_active')
   bool get isActive;
   @override
+  @JsonKey(name: 'created_at')
   DateTime get createdAt;
   @override
+  @JsonKey(name: 'updated_at')
   DateTime get updatedAt;
 
   /// Create a copy of Room
