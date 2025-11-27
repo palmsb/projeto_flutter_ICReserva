@@ -85,4 +85,19 @@ class RoomController extends AsyncNotifier<List<Room>> {
       throw Exception('Erro ao deletar sala: $e');
     }
   }
+
+  Future<List<Room>> fetchAvailableRooms() async {
+    try {
+      final data = await _supabase
+          .from('rooms')
+          .select()
+          .eq('available', true)
+          .order('name') as List<dynamic>;
+      return data
+          .map((e) => Room.fromJson(Map<String, dynamic>.from(e)))
+          .toList();
+    } catch (e) {
+      throw Exception('Erro ao buscar salas disponíveis: $e');
+    }
+  }
 }

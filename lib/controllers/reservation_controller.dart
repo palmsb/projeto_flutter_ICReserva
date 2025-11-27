@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter_icreserva/models/room.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/reservation.dart';
@@ -37,15 +36,6 @@ class ReservationController extends AsyncNotifier<List<Reservation>> {
       return Reservation.fromJson(Map<String, dynamic>.from(data));
     } catch (e) {
       throw Exception('Erro ao criar reserva: $e');
-    }
-  }
-
-  Future<List<Room>> fetchAvailable() async {
-    try {
-     final data = await _supabase.from('rooms').select().eq('available', true).order('name') as List<dynamic>;
-      return data.map((e) => Room.fromJson(Map<String, dynamic>.from(e))).toList();
-    } catch (e) {
-      throw Exception('Erro ao buscar salas disponíveis: $e');
     }
   }
 
