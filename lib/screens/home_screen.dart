@@ -19,7 +19,7 @@ class HomeScreen extends ConsumerWidget {
             children: [
               const SizedBox(height: 12),
 
-              // --------- HEADER BONITO ----------
+              // --------- HEADER/NAV ----------
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -99,7 +99,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  // Botões superiores (bonitos)
+  // Botões superiores
   Widget _topButton({
     required String label,
     required IconData icon,
@@ -170,7 +170,7 @@ class _RoomCard extends StatelessWidget {
                 ),
               ),
 
-              // TAG de status (igual a imagem)
+              // TAG de status
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
