@@ -13,76 +13,54 @@ class RoomController extends AsyncNotifier<List<Room>> {
 
   @override
   FutureOr<List<Room>> build() {
-    _supabase = Supabase.instance.client;
     _supabase = ref.read(supabaseClientProvider);
     return _fetchRooms();
   }
 
   Future<List<Room>> _fetchRooms() async {
     try {
-      final data =
-          await _supabase.from('rooms').select().order('name') as List<dynamic>;
-      return data
+      // Fetch rooms
+      final roomsData =
+          await _supabase.from('rooms').select().order('name');
+
+      final rooms = roomsData
           .map((e) => Room.fromJson(Map<String, dynamic>.from(e)))
           .toList();
+
+      // Fetch all bookings (current OR future)
+      final bookingsData = await _supabase
+          .from('bookings')
+          .select('room_id, status, start_time, end_time');
+
+      // Determine which rooms are booked
+      final reservedRoomIds = <String>{};
+
+      for (final b in bookingsData) {
+        final status = b['status'];
+        final start = DateTime.parse(b['start_time']);
+        final end = DateTime.parse(b['end_time']);
+
+        // ❗ Agora: qualquer reserva confirmed torna indisponível
+        final isReserved = status == 'confirmed';
+
+        if (isReserved) {
+          reservedRoomIds.add(b['room_id']);
+        }
+      }
+
+      // Apply availability
+      final updatedRooms = rooms.map((room) {
+        final isAvailable = !reservedRoomIds.contains(room.id);
+        return room.copyWith(available: isAvailable);
+      }).toList();
+
+      return updatedRooms;
     } catch (e) {
       throw Exception('Erro ao buscar salas: $e');
     }
   }
 
-  Future<Room?> fetchById(String id) async {
-    try {
-      final data = await _supabase
-          .from('rooms')
-          .select()
-          .eq('id', id)
-          .maybeSingle();
-      if (data == null) return null;
-      return Room.fromJson(Map<String, dynamic>.from(data));
-    } catch (e) {
-      throw Exception('Erro ao buscar sala $id: $e');
-    }
-  }
-
   Future<void> refreshRooms() async {
-    state = await AsyncValue.guard(() => _fetchRooms());
-  }
-
-  Future<Room> createRoom(Map<String, dynamic> payload) async {
-    try {
-      final data = await _supabase
-          .from('rooms')
-          .insert(payload)
-          .select()
-          .single();
-      await refreshRooms();
-      return Room.fromJson(Map<String, dynamic>.from(data));
-    } catch (e) {
-      throw Exception('Erro ao criar sala: $e');
-    }
-  }
-
-  Future<Room> updateRoom(String id, Map<String, dynamic> changes) async {
-    try {
-      final data = await _supabase
-          .from('rooms')
-          .update(changes)
-          .eq('id', id)
-          .select()
-          .single();
-      await refreshRooms();
-      return Room.fromJson(Map<String, dynamic>.from(data));
-    } catch (e) {
-      throw Exception('Erro ao atualizar sala: $e');
-    }
-  }
-
-  Future<void> deleteRoom(String id) async {
-    try {
-      await _supabase.from('rooms').delete().eq('id', id);
-      await refreshRooms();
-    } catch (e) {
-      throw Exception('Erro ao deletar sala: $e');
-    }
+    state = await AsyncValue.guard(_fetchRooms);
   }
 }
