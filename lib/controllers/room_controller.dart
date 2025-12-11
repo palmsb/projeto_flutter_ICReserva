@@ -13,7 +13,6 @@ class RoomController extends AsyncNotifier<List<Room>> {
 
   @override
   FutureOr<List<Room>> build() {
-    _supabase = Supabase.instance.client;
     _supabase = ref.read(supabaseClientProvider);
     return _fetchRooms();
   }
