@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../controllers/qr_code_controller.dart';
+import '../controllers/room_controller.dart';
 import '../models/room.dart';
 
 class QrCodeScreen extends ConsumerWidget {
@@ -11,8 +12,6 @@ class QrCodeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final roomsAsync = ref.watch(roomsProvider);
     final selectedRoom = ref.watch(selectedRoomProvider);
-    final showQrCode = ref.watch(showQrCodeProvider);
-    final controller = ref.read(qrCodeControllerProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
@@ -61,7 +60,7 @@ class QrCodeScreen extends ConsumerWidget {
                       return _RoomCard(
                         room: room,
                         isSelected: isSelected,
-                        onTap: () => controller.selectRoom(room),
+                        onTap: () => ref.read(selectedRoomProvider.notifier).selectRoom(room),
                       );
                     },
                   );
@@ -107,10 +106,10 @@ class QrCodeScreen extends ConsumerWidget {
             flex: 3,
             child: Container(
               color: const Color(0xFFF5F5F5),
-              child: showQrCode && selectedRoom != null
+              child: selectedRoom != null
                   ? _QrCodeDisplay(
                       room: selectedRoom,
-                      qrData: controller.generateQrData(selectedRoom),
+                      qrData: generateQrData(selectedRoom),
                     )
                   : Center(
                       child: Column(
