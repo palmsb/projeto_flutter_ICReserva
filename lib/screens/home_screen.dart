@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 import '../controllers/room_controller.dart';
 import '../models/room.dart';
+import 'login_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -19,7 +22,7 @@ class HomeScreen extends ConsumerWidget {
             children: [
               const SizedBox(height: 12),
 
-              // --------- HEADER BONITO ----------
+              // --------- HEADER ----------
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -30,10 +33,29 @@ class HomeScreen extends ConsumerWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.black,
-                    child: Icon(Icons.person, color: Colors.white),
+
+                  // BOTÃO SAIR
+                  InkWell(
+                    onTap: () async {
+                      await Supabase.instance.client.auth.signOut();
+
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                          builder: (_) => const LoginScreen(),
+                        ),
+                        (route) => false,
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(20),
+                    child: const CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.black,
+                      child: Icon(
+                        Icons.logout,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -74,7 +96,8 @@ class HomeScreen extends ConsumerWidget {
                   data: (rooms) {
                     if (rooms.isEmpty) {
                       return const Center(
-                          child: Text("Nenhuma sala cadastrada."));
+                        child: Text("Nenhuma sala cadastrada."),
+                      );
                     }
 
                     return RefreshIndicator(
@@ -99,7 +122,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  // Botões superiores (bonitos)
+  // --------- BOTÕES SUPERIORES ----------
   Widget _topButton({
     required String label,
     required IconData icon,
@@ -134,6 +157,7 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
+// --------- CARD DE SALA ----------
 class _RoomCard extends StatelessWidget {
   final Room room;
 
@@ -158,7 +182,7 @@ class _RoomCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Nome + Tag
+          // Nome + Status
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -169,8 +193,6 @@ class _RoomCard extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-
-              // TAG de status (igual a imagem)
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -195,7 +217,6 @@ class _RoomCard extends StatelessWidget {
 
           const SizedBox(height: 6),
 
-          // Localização
           Text(
             room.location,
             style: TextStyle(
@@ -206,12 +227,14 @@ class _RoomCard extends StatelessWidget {
 
           const SizedBox(height: 8),
 
-          // Capacidade + Descrição
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.people_alt,
-                  size: 16, color: Colors.grey.shade600),
+              Icon(
+                Icons.people_alt,
+                size: 16,
+                color: Colors.grey.shade600,
+              ),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
