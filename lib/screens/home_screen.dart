@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_icreserva/controllers/logout_controller.dart';
+import 'package:flutter_icreserva/screens/login_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controllers/room_controller.dart';
 import '../models/room.dart';
+import './room_detail_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -30,10 +33,18 @@ class HomeScreen extends ConsumerWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.black,
-                    child: Icon(Icons.person, color: Colors.white),
+                  GestureDetector(
+                    onTap: () async {
+                      await ref.read(logoutControllerProvider.notifier).logout();
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (_) => const LoginScreen()),
+                      );
+                    },
+                    child: const CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.black,
+                      child: Icon(Icons.person, color: Colors.white),
+                    ),
                   ),
                 ],
               ),
@@ -141,90 +152,99 @@ class _RoomCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 6,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Nome + Tag
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                room.name,
-                style: const TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-
-              // TAG de status
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: room.available
-                      ? Colors.green.shade50
-                      : Colors.red.shade50,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  room.available ? "Disponível" : "Reservada",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color:
-                        room.available ? Colors.green : Colors.red,
+    return InkWell(
+      onTap: () {
+        // navega para a tela de detalhes passando o objeto room
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => RoomDetailScreen(room: room)),
+        );
+      },
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 14),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 6,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Nome  Tag
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  room.name,
+                  style: const TextStyle(
+                    fontSize: 17,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-              ),
-            ],
-          ),
 
-          const SizedBox(height: 6),
-
-          // Localização
-          Text(
-            room.location,
-            style: TextStyle(
-              color: Colors.grey.shade700,
-              fontSize: 13,
-            ),
-          ),
-
-          const SizedBox(height: 8),
-
-          // Capacidade + Descrição
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(Icons.people_alt,
-                  size: 16, color: Colors.grey.shade600),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  "${room.capacity} pessoas\n${room.description}",
-                  style: TextStyle(
-                    color: Colors.grey.shade700,
-                    fontSize: 13,
+                // TAG de status
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: room.available
+                        ? Colors.green.shade50
+                        : Colors.red.shade50,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    room.available ? "Disponível" : "Reservada",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color:
+                          room.available ? Colors.green : Colors.red,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
+              ],
+            ),
+
+            const SizedBox(height: 6),
+
+            // Localização
+            Text(
+              room.location,
+              style: TextStyle(
+                color: Colors.grey.shade700,
+                fontSize: 13,
               ),
-            ],
-          ),
-        ],
+            ),
+
+            const SizedBox(height: 8),
+
+            // Capacidade + Descrição
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.people_alt,
+                    size: 16, color: Colors.grey.shade600),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    "${room.capacity} pessoas\n${room.description}",
+                    style: TextStyle(
+                      color: Colors.grey.shade700,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
