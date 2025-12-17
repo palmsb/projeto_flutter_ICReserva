@@ -169,8 +169,11 @@ class ReservationsListScreen extends ConsumerWidget {
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
           insetPadding: const EdgeInsets.symmetric(horizontal: 16),
+          contentPadding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
           title: const Text('Editar Reserva'),
-          content: SingleChildScrollView(
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width - 32,
+            child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,8 +272,7 @@ class ReservationsListScreen extends ConsumerWidget {
                   maxLines: 3,
                 ),
               ],
-            ),
-          ),
+            ),            ),          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -338,9 +340,6 @@ class ReservationsListScreen extends ConsumerWidget {
         }
       }
     }
-    
-    responsavelController.dispose();
-    observacoesController.dispose();
   }
 }
 
