@@ -29,7 +29,6 @@ mixin _$Reservation {
   @JsonKey(name: 'start_time')
   DateTime get startTime => throw _privateConstructorUsedError;
   @JsonKey(name: 'end_time')
-  @Assert('startTime.isBefore(endTime)', 'Start time must be before end time')
   DateTime get endTime => throw _privateConstructorUsedError;
   ReservationStatus get status => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
@@ -59,9 +58,7 @@ abstract class $ReservationCopyWith<$Res> {
     @JsonKey(name: 'room_id') String roomId,
     @JsonKey(name: 'user_id') String userId,
     @JsonKey(name: 'start_time') DateTime startTime,
-    @JsonKey(name: 'end_time')
-    @Assert('startTime.isBefore(endTime)', 'Start time must be before end time')
-    DateTime endTime,
+    @JsonKey(name: 'end_time') DateTime endTime,
     ReservationStatus status,
     @JsonKey(name: 'created_at') DateTime createdAt,
     String responsavel,
@@ -152,9 +149,7 @@ abstract class _$$ReservationImplCopyWith<$Res>
     @JsonKey(name: 'room_id') String roomId,
     @JsonKey(name: 'user_id') String userId,
     @JsonKey(name: 'start_time') DateTime startTime,
-    @JsonKey(name: 'end_time')
-    @Assert('startTime.isBefore(endTime)', 'Start time must be before end time')
-    DateTime endTime,
+    @JsonKey(name: 'end_time') DateTime endTime,
     ReservationStatus status,
     @JsonKey(name: 'created_at') DateTime createdAt,
     String responsavel,
@@ -237,9 +232,7 @@ class _$ReservationImpl implements _Reservation {
     @JsonKey(name: 'room_id') required this.roomId,
     @JsonKey(name: 'user_id') required this.userId,
     @JsonKey(name: 'start_time') required this.startTime,
-    @JsonKey(name: 'end_time')
-    @Assert('startTime.isBefore(endTime)', 'Start time must be before end time')
-    required this.endTime,
+    @JsonKey(name: 'end_time') required this.endTime,
     this.status = ReservationStatus.pending,
     @JsonKey(name: 'created_at') required this.createdAt,
     this.responsavel = '',
@@ -262,7 +255,6 @@ class _$ReservationImpl implements _Reservation {
   final DateTime startTime;
   @override
   @JsonKey(name: 'end_time')
-  @Assert('startTime.isBefore(endTime)', 'Start time must be before end time')
   final DateTime endTime;
   @override
   @JsonKey()
@@ -337,9 +329,7 @@ abstract class _Reservation implements Reservation {
     @JsonKey(name: 'room_id') required final String roomId,
     @JsonKey(name: 'user_id') required final String userId,
     @JsonKey(name: 'start_time') required final DateTime startTime,
-    @JsonKey(name: 'end_time')
-    @Assert('startTime.isBefore(endTime)', 'Start time must be before end time')
-    required final DateTime endTime,
+    @JsonKey(name: 'end_time') required final DateTime endTime,
     final ReservationStatus status,
     @JsonKey(name: 'created_at') required final DateTime createdAt,
     final String responsavel,
@@ -362,7 +352,6 @@ abstract class _Reservation implements Reservation {
   DateTime get startTime;
   @override
   @JsonKey(name: 'end_time')
-  @Assert('startTime.isBefore(endTime)', 'Start time must be before end time')
   DateTime get endTime;
   @override
   ReservationStatus get status;

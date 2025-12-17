@@ -195,7 +195,7 @@ Colors.black,
                       ),
                       const SizedBox(height: 8),
                       DropdownButtonFormField<bool>(
-                        value: _isAvailable,
+                        initialValue: _isAvailable,
                         items: const [
                           DropdownMenuItem(
                             value: true,

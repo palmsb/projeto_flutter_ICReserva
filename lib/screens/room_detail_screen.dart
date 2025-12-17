@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/room.dart';
-import '../controllers/reservation_controller.dart';
 import '../controllers/room_controller.dart';
 import '../screens/login_screen.dart';
 import '../screens/new_reservation_screen.dart';
@@ -158,8 +157,9 @@ class RoomDetailScreen extends ConsumerWidget {
                     const SizedBox(height: 12),
 
                     // descrição
-                    if ((currentRoom.description ?? '').isNotEmpty)
-                      Text(currentRoom.description ?? '', style: TextStyle(color: Colors.grey.shade700)),
+                    // ignore: dead_code
+                    if ((currentRoom.description).isNotEmpty)
+                      Text(currentRoom.description  , style: TextStyle(color: Colors.grey.shade700)),
 
                     const SizedBox(height: 18),
 
