@@ -19,12 +19,24 @@ class UserController extends AsyncNotifier<AppUser.User?> {
     try {
       final authUser = _supabase.auth.currentUser;
       if (authUser == null) return null;
+      
       final data = await _supabase.from('profiles').select().eq('id', authUser.id).maybeSingle();
-      print('DEBUG profiles data: $data'); // Debug temporário
       if (data == null) return null;
-      return AppUser.User.fromJson(Map<String, dynamic>.from(data));
+      
+      // Garante valores padrão para campos que podem estar faltando no banco
+      final profileData = <String, dynamic>{
+        'id': data['id'] ?? authUser.id,
+        'email': data['email'] ?? authUser.email ?? '',
+        'name': data['name'] ?? data['full_name'] ?? authUser.email?.split('@').first ?? '',
+        'phone': data['phone'] ?? '',
+        'photo_url': data['photo_url'] ?? data['avatar_url'] ?? '',
+        'department': data['department'] ?? data['role'] ?? '',
+        'created_at': data['created_at'] ?? DateTime.now().toIso8601String(),
+        'updated_at': data['updated_at'] ?? DateTime.now().toIso8601String(),
+      };
+      
+      return AppUser.User.fromJson(profileData);
     } catch (e) {
-      print('DEBUG erro: $e'); // Debug temporário
       throw Exception('Erro ao buscar perfil do usuário: $e');
     }
   }
