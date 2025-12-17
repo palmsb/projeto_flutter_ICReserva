@@ -4,23 +4,26 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/room.dart';
 import '../repositories/auth_repository.dart';
 
-final roomsProvider = AsyncNotifierProvider<RoomController, List<Room>>(
+final roomsProvider =
+    AsyncNotifierProvider<RoomController, List<Room>>(
   () => RoomController(),
 );
 
 class RoomController extends AsyncNotifier<List<Room>> {
-  SupabaseClient get _supabase => Supabase.instance.client;
+  SupabaseClient get _supabase => ref.read(supabaseClientProvider);
 
   @override
   FutureOr<List<Room>> build() {
     return _fetchRooms();
   }
 
+ 
   Future<List<Room>> _fetchRooms() async {
     try {
-      final data =
-          await _supabase.from('rooms').select().order('name') as List<dynamic>;
-      return data
+      final roomsData =
+          await _supabase.from('rooms').select().order('name');
+
+      return roomsData
           .map((e) => Room.fromJson(Map<String, dynamic>.from(e)))
           .toList();
     } catch (e) {
@@ -28,59 +31,47 @@ class RoomController extends AsyncNotifier<List<Room>> {
     }
   }
 
-  Future<Room?> fetchById(String id) async {
-    try {
-      final data = await _supabase
-          .from('rooms')
-          .select()
-          .eq('id', id)
-          .maybeSingle();
-      if (data == null) return null;
-      return Room.fromJson(Map<String, dynamic>.from(data));
-    } catch (e) {
-      throw Exception('Erro ao buscar sala $id: $e');
-    }
-  }
-
+  // 🔄 Refresh
   Future<void> refreshRooms() async {
-    state = await AsyncValue.guard(() => _fetchRooms());
+    state = await AsyncValue.guard(_fetchRooms);
   }
 
-  Future<Room> createRoom(Map<String, dynamic> payload) async {
+
+  Future<void> deleteRoom(String roomId) async {
     try {
-      final data = await _supabase
+      // 1 Excluir reservas da sala
+      await _supabase
+          .from('bookings')
+          .delete()
+          .eq('room_id', roomId);
+
+      // 2 Excluir a sala
+      await _supabase
           .from('rooms')
-          .insert(payload)
-          .select()
-          .single();
+          .delete()
+          .eq('id', roomId);
+
+      // 3️ Atualiza o provider
       await refreshRooms();
-      return Room.fromJson(Map<String, dynamic>.from(data));
     } catch (e) {
-      throw Exception('Erro ao criar sala: $e');
+      throw Exception('Erro ao excluir sala: $e');
     }
   }
 
-  Future<Room> updateRoom(String id, Map<String, dynamic> changes) async {
-    try {
-      final data = await _supabase
-          .from('rooms')
-          .update(changes)
-          .eq('id', id)
-          .select()
-          .single();
-      await refreshRooms();
-      return Room.fromJson(Map<String, dynamic>.from(data));
-    } catch (e) {
-      throw Exception('Erro ao atualizar sala: $e');
-    }
-  }
+  Future<void> createRoom(Room room) async {
+  try {
+    await _supabase.from('rooms').insert({
+      'name': room.name,
+      'location': room.location,
+      'capacity': room.capacity,
+      'description': room.description,
+      'available': room.available,
+    });
 
-  Future<void> deleteRoom(String id) async {
-    try {
-      await _supabase.from('rooms').delete().eq('id', id);
-      await refreshRooms();
-    } catch (e) {
-      throw Exception('Erro ao deletar sala: $e');
-    }
+    await refreshRooms();
+  } catch (e) {
+    throw Exception('Erro ao criar sala: $e');
   }
+}
+
 }

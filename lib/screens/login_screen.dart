@@ -3,30 +3,41 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controllers/login_controller.dart';
 import 'home_screen.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
+class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final emailController = TextEditingController();
-  final senhaController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    final loginState = ref.watch(loginControllerProvider);
-
-    // Navegar para home screen quando login for bem-sucedido
+  Widget build(BuildContext context, WidgetRef ref) {
+    // --- LISTEN DO ESTADO ---
     ref.listen(loginControllerProvider, (previous, next) {
       if (next.isLogged) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
         );
       }
+      if (next.errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+      content: const Text(
+        "Credenciais inválidas. Por favor tente novamente.",
+        style: TextStyle(color: Colors.white),
+      ),
+      backgroundColor: Colors.red,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+    ),
+  );
+}
     });
+
+    final loginState = ref.watch(loginControllerProvider);
+
+    final emailController = TextEditingController();
+    final senhaController = TextEditingController();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
@@ -64,9 +75,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 20),
-
               const Text(
                 "Reserva de Salas",
                 style: TextStyle(
@@ -74,9 +83,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-
               const SizedBox(height: 4),
-
               const Text(
                 "Instituto de Computação",
                 style: TextStyle(
@@ -84,10 +91,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   color: Colors.black54,
                 ),
               ),
-
               const SizedBox(height: 32),
 
-              // Campo Email
+              // Email
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -112,10 +118,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 20),
 
-              // Campo Senha
+              // Senha
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -141,10 +146,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 28),
 
-              // Botão Entrar
+              // Botão
               SizedBox(
                 width: double.infinity,
                 height: 48,
@@ -176,31 +180,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                 ),
               ),
-
               const SizedBox(height: 12),
-
-              // Exibir erro
-              if (loginState.errorMessage != null)
-                Text(
-                  loginState.errorMessage!,
-                  style: const TextStyle(
-                    color: Colors.red,
-                    fontSize: 13,
-                  ),
-                ),
-
-              const SizedBox(height: 16),
-
-              GestureDetector(
-                onTap: () {},
-                child: const Text(
-                  "Esqueceu sua senha?",
-                  style: TextStyle(
-                    color: Colors.black87,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ),
             ],
           ),
         ),

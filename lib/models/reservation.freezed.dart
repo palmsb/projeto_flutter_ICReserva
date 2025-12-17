@@ -26,20 +26,16 @@ mixin _$Reservation {
   String get roomId => throw _privateConstructorUsedError;
   @JsonKey(name: 'user_id')
   String get userId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'start_date')
-  DateTime get startDate => throw _privateConstructorUsedError;
-  @JsonKey(name: 'end_date')
-  @Assert('startDate.isBefore(endDate)', 'Start date must be before end date')
-  DateTime get endDate => throw _privateConstructorUsedError;
-  @Assert('attendees > 0', 'Attendees must be greater than 0')
-  int get attendees => throw _privateConstructorUsedError;
-  String get purpose => throw _privateConstructorUsedError;
+  @JsonKey(name: 'start_time')
+  DateTime get startTime => throw _privateConstructorUsedError;
+  @JsonKey(name: 'end_time')
+  @Assert('startTime.isBefore(endTime)', 'Start time must be before end time')
+  DateTime get endTime => throw _privateConstructorUsedError;
   ReservationStatus get status => throw _privateConstructorUsedError;
-  String get notes => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   DateTime get createdAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'updated_at')
-  DateTime get updatedAt => throw _privateConstructorUsedError;
+  String get responsavel => throw _privateConstructorUsedError;
+  String get observacoes => throw _privateConstructorUsedError;
 
   /// Serializes this Reservation to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -62,16 +58,14 @@ abstract class $ReservationCopyWith<$Res> {
     String id,
     @JsonKey(name: 'room_id') String roomId,
     @JsonKey(name: 'user_id') String userId,
-    @JsonKey(name: 'start_date') DateTime startDate,
-    @JsonKey(name: 'end_date')
-    @Assert('startDate.isBefore(endDate)', 'Start date must be before end date')
-    DateTime endDate,
-    @Assert('attendees > 0', 'Attendees must be greater than 0') int attendees,
-    String purpose,
+    @JsonKey(name: 'start_time') DateTime startTime,
+    @JsonKey(name: 'end_time')
+    @Assert('startTime.isBefore(endTime)', 'Start time must be before end time')
+    DateTime endTime,
     ReservationStatus status,
-    String notes,
     @JsonKey(name: 'created_at') DateTime createdAt,
-    @JsonKey(name: 'updated_at') DateTime updatedAt,
+    String responsavel,
+    String observacoes,
   });
 }
 
@@ -93,14 +87,12 @@ class _$ReservationCopyWithImpl<$Res, $Val extends Reservation>
     Object? id = null,
     Object? roomId = null,
     Object? userId = null,
-    Object? startDate = null,
-    Object? endDate = null,
-    Object? attendees = null,
-    Object? purpose = null,
+    Object? startTime = null,
+    Object? endTime = null,
     Object? status = null,
-    Object? notes = null,
     Object? createdAt = null,
-    Object? updatedAt = null,
+    Object? responsavel = null,
+    Object? observacoes = null,
   }) {
     return _then(
       _value.copyWith(
@@ -116,38 +108,30 @@ class _$ReservationCopyWithImpl<$Res, $Val extends Reservation>
                 ? _value.userId
                 : userId // ignore: cast_nullable_to_non_nullable
                       as String,
-            startDate: null == startDate
-                ? _value.startDate
-                : startDate // ignore: cast_nullable_to_non_nullable
+            startTime: null == startTime
+                ? _value.startTime
+                : startTime // ignore: cast_nullable_to_non_nullable
                       as DateTime,
-            endDate: null == endDate
-                ? _value.endDate
-                : endDate // ignore: cast_nullable_to_non_nullable
+            endTime: null == endTime
+                ? _value.endTime
+                : endTime // ignore: cast_nullable_to_non_nullable
                       as DateTime,
-            attendees: null == attendees
-                ? _value.attendees
-                : attendees // ignore: cast_nullable_to_non_nullable
-                      as int,
-            purpose: null == purpose
-                ? _value.purpose
-                : purpose // ignore: cast_nullable_to_non_nullable
-                      as String,
             status: null == status
                 ? _value.status
                 : status // ignore: cast_nullable_to_non_nullable
                       as ReservationStatus,
-            notes: null == notes
-                ? _value.notes
-                : notes // ignore: cast_nullable_to_non_nullable
-                      as String,
             createdAt: null == createdAt
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
                       as DateTime,
-            updatedAt: null == updatedAt
-                ? _value.updatedAt
-                : updatedAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
+            responsavel: null == responsavel
+                ? _value.responsavel
+                : responsavel // ignore: cast_nullable_to_non_nullable
+                      as String,
+            observacoes: null == observacoes
+                ? _value.observacoes
+                : observacoes // ignore: cast_nullable_to_non_nullable
+                      as String,
           )
           as $Val,
     );
@@ -167,16 +151,14 @@ abstract class _$$ReservationImplCopyWith<$Res>
     String id,
     @JsonKey(name: 'room_id') String roomId,
     @JsonKey(name: 'user_id') String userId,
-    @JsonKey(name: 'start_date') DateTime startDate,
-    @JsonKey(name: 'end_date')
-    @Assert('startDate.isBefore(endDate)', 'Start date must be before end date')
-    DateTime endDate,
-    @Assert('attendees > 0', 'Attendees must be greater than 0') int attendees,
-    String purpose,
+    @JsonKey(name: 'start_time') DateTime startTime,
+    @JsonKey(name: 'end_time')
+    @Assert('startTime.isBefore(endTime)', 'Start time must be before end time')
+    DateTime endTime,
     ReservationStatus status,
-    String notes,
     @JsonKey(name: 'created_at') DateTime createdAt,
-    @JsonKey(name: 'updated_at') DateTime updatedAt,
+    String responsavel,
+    String observacoes,
   });
 }
 
@@ -197,14 +179,12 @@ class __$$ReservationImplCopyWithImpl<$Res>
     Object? id = null,
     Object? roomId = null,
     Object? userId = null,
-    Object? startDate = null,
-    Object? endDate = null,
-    Object? attendees = null,
-    Object? purpose = null,
+    Object? startTime = null,
+    Object? endTime = null,
     Object? status = null,
-    Object? notes = null,
     Object? createdAt = null,
-    Object? updatedAt = null,
+    Object? responsavel = null,
+    Object? observacoes = null,
   }) {
     return _then(
       _$ReservationImpl(
@@ -220,38 +200,30 @@ class __$$ReservationImplCopyWithImpl<$Res>
             ? _value.userId
             : userId // ignore: cast_nullable_to_non_nullable
                   as String,
-        startDate: null == startDate
-            ? _value.startDate
-            : startDate // ignore: cast_nullable_to_non_nullable
+        startTime: null == startTime
+            ? _value.startTime
+            : startTime // ignore: cast_nullable_to_non_nullable
                   as DateTime,
-        endDate: null == endDate
-            ? _value.endDate
-            : endDate // ignore: cast_nullable_to_non_nullable
+        endTime: null == endTime
+            ? _value.endTime
+            : endTime // ignore: cast_nullable_to_non_nullable
                   as DateTime,
-        attendees: null == attendees
-            ? _value.attendees
-            : attendees // ignore: cast_nullable_to_non_nullable
-                  as int,
-        purpose: null == purpose
-            ? _value.purpose
-            : purpose // ignore: cast_nullable_to_non_nullable
-                  as String,
         status: null == status
             ? _value.status
             : status // ignore: cast_nullable_to_non_nullable
                   as ReservationStatus,
-        notes: null == notes
-            ? _value.notes
-            : notes // ignore: cast_nullable_to_non_nullable
-                  as String,
         createdAt: null == createdAt
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
                   as DateTime,
-        updatedAt: null == updatedAt
-            ? _value.updatedAt
-            : updatedAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
+        responsavel: null == responsavel
+            ? _value.responsavel
+            : responsavel // ignore: cast_nullable_to_non_nullable
+                  as String,
+        observacoes: null == observacoes
+            ? _value.observacoes
+            : observacoes // ignore: cast_nullable_to_non_nullable
+                  as String,
       ),
     );
   }
@@ -264,17 +236,14 @@ class _$ReservationImpl implements _Reservation {
     required this.id,
     @JsonKey(name: 'room_id') required this.roomId,
     @JsonKey(name: 'user_id') required this.userId,
-    @JsonKey(name: 'start_date') required this.startDate,
-    @JsonKey(name: 'end_date')
-    @Assert('startDate.isBefore(endDate)', 'Start date must be before end date')
-    required this.endDate,
-    @Assert('attendees > 0', 'Attendees must be greater than 0')
-    required this.attendees,
-    required this.purpose,
+    @JsonKey(name: 'start_time') required this.startTime,
+    @JsonKey(name: 'end_time')
+    @Assert('startTime.isBefore(endTime)', 'Start time must be before end time')
+    required this.endTime,
     this.status = ReservationStatus.pending,
-    this.notes = '',
     @JsonKey(name: 'created_at') required this.createdAt,
-    @JsonKey(name: 'updated_at') required this.updatedAt,
+    this.responsavel = '',
+    this.observacoes = '',
   });
 
   factory _$ReservationImpl.fromJson(Map<String, dynamic> json) =>
@@ -289,33 +258,28 @@ class _$ReservationImpl implements _Reservation {
   @JsonKey(name: 'user_id')
   final String userId;
   @override
-  @JsonKey(name: 'start_date')
-  final DateTime startDate;
+  @JsonKey(name: 'start_time')
+  final DateTime startTime;
   @override
-  @JsonKey(name: 'end_date')
-  @Assert('startDate.isBefore(endDate)', 'Start date must be before end date')
-  final DateTime endDate;
-  @override
-  @Assert('attendees > 0', 'Attendees must be greater than 0')
-  final int attendees;
-  @override
-  final String purpose;
+  @JsonKey(name: 'end_time')
+  @Assert('startTime.isBefore(endTime)', 'Start time must be before end time')
+  final DateTime endTime;
   @override
   @JsonKey()
   final ReservationStatus status;
   @override
-  @JsonKey()
-  final String notes;
-  @override
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
   @override
-  @JsonKey(name: 'updated_at')
-  final DateTime updatedAt;
+  @JsonKey()
+  final String responsavel;
+  @override
+  @JsonKey()
+  final String observacoes;
 
   @override
   String toString() {
-    return 'Reservation(id: $id, roomId: $roomId, userId: $userId, startDate: $startDate, endDate: $endDate, attendees: $attendees, purpose: $purpose, status: $status, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'Reservation(id: $id, roomId: $roomId, userId: $userId, startTime: $startTime, endTime: $endTime, status: $status, createdAt: $createdAt, responsavel: $responsavel, observacoes: $observacoes)';
   }
 
   @override
@@ -326,18 +290,16 @@ class _$ReservationImpl implements _Reservation {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.roomId, roomId) || other.roomId == roomId) &&
             (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.startDate, startDate) ||
-                other.startDate == startDate) &&
-            (identical(other.endDate, endDate) || other.endDate == endDate) &&
-            (identical(other.attendees, attendees) ||
-                other.attendees == attendees) &&
-            (identical(other.purpose, purpose) || other.purpose == purpose) &&
+            (identical(other.startTime, startTime) ||
+                other.startTime == startTime) &&
+            (identical(other.endTime, endTime) || other.endTime == endTime) &&
             (identical(other.status, status) || other.status == status) &&
-            (identical(other.notes, notes) || other.notes == notes) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
-            (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt));
+            (identical(other.responsavel, responsavel) ||
+                other.responsavel == responsavel) &&
+            (identical(other.observacoes, observacoes) ||
+                other.observacoes == observacoes));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -347,14 +309,12 @@ class _$ReservationImpl implements _Reservation {
     id,
     roomId,
     userId,
-    startDate,
-    endDate,
-    attendees,
-    purpose,
+    startTime,
+    endTime,
     status,
-    notes,
     createdAt,
-    updatedAt,
+    responsavel,
+    observacoes,
   );
 
   /// Create a copy of Reservation
@@ -376,17 +336,14 @@ abstract class _Reservation implements Reservation {
     required final String id,
     @JsonKey(name: 'room_id') required final String roomId,
     @JsonKey(name: 'user_id') required final String userId,
-    @JsonKey(name: 'start_date') required final DateTime startDate,
-    @JsonKey(name: 'end_date')
-    @Assert('startDate.isBefore(endDate)', 'Start date must be before end date')
-    required final DateTime endDate,
-    @Assert('attendees > 0', 'Attendees must be greater than 0')
-    required final int attendees,
-    required final String purpose,
+    @JsonKey(name: 'start_time') required final DateTime startTime,
+    @JsonKey(name: 'end_time')
+    @Assert('startTime.isBefore(endTime)', 'Start time must be before end time')
+    required final DateTime endTime,
     final ReservationStatus status,
-    final String notes,
     @JsonKey(name: 'created_at') required final DateTime createdAt,
-    @JsonKey(name: 'updated_at') required final DateTime updatedAt,
+    final String responsavel,
+    final String observacoes,
   }) = _$ReservationImpl;
 
   factory _Reservation.fromJson(Map<String, dynamic> json) =
@@ -401,27 +358,21 @@ abstract class _Reservation implements Reservation {
   @JsonKey(name: 'user_id')
   String get userId;
   @override
-  @JsonKey(name: 'start_date')
-  DateTime get startDate;
+  @JsonKey(name: 'start_time')
+  DateTime get startTime;
   @override
-  @JsonKey(name: 'end_date')
-  @Assert('startDate.isBefore(endDate)', 'Start date must be before end date')
-  DateTime get endDate;
-  @override
-  @Assert('attendees > 0', 'Attendees must be greater than 0')
-  int get attendees;
-  @override
-  String get purpose;
+  @JsonKey(name: 'end_time')
+  @Assert('startTime.isBefore(endTime)', 'Start time must be before end time')
+  DateTime get endTime;
   @override
   ReservationStatus get status;
-  @override
-  String get notes;
   @override
   @JsonKey(name: 'created_at')
   DateTime get createdAt;
   @override
-  @JsonKey(name: 'updated_at')
-  DateTime get updatedAt;
+  String get responsavel;
+  @override
+  String get observacoes;
 
   /// Create a copy of Reservation
   /// with the given fields replaced by the non-null parameter values.

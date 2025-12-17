@@ -24,18 +24,11 @@ mixin _$Room {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
-  @Assert('capacity > 0', 'Capacity must be greater than 0')
   int get capacity => throw _privateConstructorUsedError;
   String get location => throw _privateConstructorUsedError;
-  @JsonKey(name: 'photo_url')
-  String get photoUrl => throw _privateConstructorUsedError;
-  List<String> get amenities => throw _privateConstructorUsedError;
-  @JsonKey(name: 'is_active')
-  bool get isActive => throw _privateConstructorUsedError;
+  bool get available => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   DateTime get createdAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'updated_at')
-  DateTime get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this Room to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -55,13 +48,10 @@ abstract class $RoomCopyWith<$Res> {
     String id,
     String name,
     String description,
-    @Assert('capacity > 0', 'Capacity must be greater than 0') int capacity,
+    int capacity,
     String location,
-    @JsonKey(name: 'photo_url') String photoUrl,
-    List<String> amenities,
-    @JsonKey(name: 'is_active') bool isActive,
+    bool available,
     @JsonKey(name: 'created_at') DateTime createdAt,
-    @JsonKey(name: 'updated_at') DateTime updatedAt,
   });
 }
 
@@ -85,11 +75,8 @@ class _$RoomCopyWithImpl<$Res, $Val extends Room>
     Object? description = null,
     Object? capacity = null,
     Object? location = null,
-    Object? photoUrl = null,
-    Object? amenities = null,
-    Object? isActive = null,
+    Object? available = null,
     Object? createdAt = null,
-    Object? updatedAt = null,
   }) {
     return _then(
       _value.copyWith(
@@ -113,25 +100,13 @@ class _$RoomCopyWithImpl<$Res, $Val extends Room>
                 ? _value.location
                 : location // ignore: cast_nullable_to_non_nullable
                       as String,
-            photoUrl: null == photoUrl
-                ? _value.photoUrl
-                : photoUrl // ignore: cast_nullable_to_non_nullable
-                      as String,
-            amenities: null == amenities
-                ? _value.amenities
-                : amenities // ignore: cast_nullable_to_non_nullable
-                      as List<String>,
-            isActive: null == isActive
-                ? _value.isActive
-                : isActive // ignore: cast_nullable_to_non_nullable
+            available: null == available
+                ? _value.available
+                : available // ignore: cast_nullable_to_non_nullable
                       as bool,
             createdAt: null == createdAt
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-            updatedAt: null == updatedAt
-                ? _value.updatedAt
-                : updatedAt // ignore: cast_nullable_to_non_nullable
                       as DateTime,
           )
           as $Val,
@@ -151,13 +126,10 @@ abstract class _$$RoomImplCopyWith<$Res> implements $RoomCopyWith<$Res> {
     String id,
     String name,
     String description,
-    @Assert('capacity > 0', 'Capacity must be greater than 0') int capacity,
+    int capacity,
     String location,
-    @JsonKey(name: 'photo_url') String photoUrl,
-    List<String> amenities,
-    @JsonKey(name: 'is_active') bool isActive,
+    bool available,
     @JsonKey(name: 'created_at') DateTime createdAt,
-    @JsonKey(name: 'updated_at') DateTime updatedAt,
   });
 }
 
@@ -178,11 +150,8 @@ class __$$RoomImplCopyWithImpl<$Res>
     Object? description = null,
     Object? capacity = null,
     Object? location = null,
-    Object? photoUrl = null,
-    Object? amenities = null,
-    Object? isActive = null,
+    Object? available = null,
     Object? createdAt = null,
-    Object? updatedAt = null,
   }) {
     return _then(
       _$RoomImpl(
@@ -206,25 +175,13 @@ class __$$RoomImplCopyWithImpl<$Res>
             ? _value.location
             : location // ignore: cast_nullable_to_non_nullable
                   as String,
-        photoUrl: null == photoUrl
-            ? _value.photoUrl
-            : photoUrl // ignore: cast_nullable_to_non_nullable
-                  as String,
-        amenities: null == amenities
-            ? _value._amenities
-            : amenities // ignore: cast_nullable_to_non_nullable
-                  as List<String>,
-        isActive: null == isActive
-            ? _value.isActive
-            : isActive // ignore: cast_nullable_to_non_nullable
+        available: null == available
+            ? _value.available
+            : available // ignore: cast_nullable_to_non_nullable
                   as bool,
         createdAt: null == createdAt
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-        updatedAt: null == updatedAt
-            ? _value.updatedAt
-            : updatedAt // ignore: cast_nullable_to_non_nullable
                   as DateTime,
       ),
     );
@@ -238,15 +195,11 @@ class _$RoomImpl implements _Room {
     required this.id,
     required this.name,
     required this.description,
-    @Assert('capacity > 0', 'Capacity must be greater than 0')
     required this.capacity,
     required this.location,
-    @JsonKey(name: 'photo_url') this.photoUrl = '',
-    final List<String> amenities = const [],
-    @JsonKey(name: 'is_active') required this.isActive,
+    required this.available,
     @JsonKey(name: 'created_at') required this.createdAt,
-    @JsonKey(name: 'updated_at') required this.updatedAt,
-  }) : _amenities = amenities;
+  });
 
   factory _$RoomImpl.fromJson(Map<String, dynamic> json) =>
       _$$RoomImplFromJson(json);
@@ -258,35 +211,18 @@ class _$RoomImpl implements _Room {
   @override
   final String description;
   @override
-  @Assert('capacity > 0', 'Capacity must be greater than 0')
   final int capacity;
   @override
   final String location;
   @override
-  @JsonKey(name: 'photo_url')
-  final String photoUrl;
-  final List<String> _amenities;
-  @override
-  @JsonKey()
-  List<String> get amenities {
-    if (_amenities is EqualUnmodifiableListView) return _amenities;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_amenities);
-  }
-
-  @override
-  @JsonKey(name: 'is_active')
-  final bool isActive;
+  final bool available;
   @override
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
-  @override
-  @JsonKey(name: 'updated_at')
-  final DateTime updatedAt;
 
   @override
   String toString() {
-    return 'Room(id: $id, name: $name, description: $description, capacity: $capacity, location: $location, photoUrl: $photoUrl, amenities: $amenities, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'Room(id: $id, name: $name, description: $description, capacity: $capacity, location: $location, available: $available, createdAt: $createdAt)';
   }
 
   @override
@@ -302,18 +238,10 @@ class _$RoomImpl implements _Room {
                 other.capacity == capacity) &&
             (identical(other.location, location) ||
                 other.location == location) &&
-            (identical(other.photoUrl, photoUrl) ||
-                other.photoUrl == photoUrl) &&
-            const DeepCollectionEquality().equals(
-              other._amenities,
-              _amenities,
-            ) &&
-            (identical(other.isActive, isActive) ||
-                other.isActive == isActive) &&
+            (identical(other.available, available) ||
+                other.available == available) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt));
+                other.createdAt == createdAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -325,11 +253,8 @@ class _$RoomImpl implements _Room {
     description,
     capacity,
     location,
-    photoUrl,
-    const DeepCollectionEquality().hash(_amenities),
-    isActive,
+    available,
     createdAt,
-    updatedAt,
   );
 
   /// Create a copy of Room
@@ -351,14 +276,10 @@ abstract class _Room implements Room {
     required final String id,
     required final String name,
     required final String description,
-    @Assert('capacity > 0', 'Capacity must be greater than 0')
     required final int capacity,
     required final String location,
-    @JsonKey(name: 'photo_url') final String photoUrl,
-    final List<String> amenities,
-    @JsonKey(name: 'is_active') required final bool isActive,
+    required final bool available,
     @JsonKey(name: 'created_at') required final DateTime createdAt,
-    @JsonKey(name: 'updated_at') required final DateTime updatedAt,
   }) = _$RoomImpl;
 
   factory _Room.fromJson(Map<String, dynamic> json) = _$RoomImpl.fromJson;
@@ -370,24 +291,14 @@ abstract class _Room implements Room {
   @override
   String get description;
   @override
-  @Assert('capacity > 0', 'Capacity must be greater than 0')
   int get capacity;
   @override
   String get location;
   @override
-  @JsonKey(name: 'photo_url')
-  String get photoUrl;
-  @override
-  List<String> get amenities;
-  @override
-  @JsonKey(name: 'is_active')
-  bool get isActive;
+  bool get available;
   @override
   @JsonKey(name: 'created_at')
   DateTime get createdAt;
-  @override
-  @JsonKey(name: 'updated_at')
-  DateTime get updatedAt;
 
   /// Create a copy of Room
   /// with the given fields replaced by the non-null parameter values.

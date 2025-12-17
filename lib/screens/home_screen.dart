@@ -1,90 +1,122 @@
 import 'package:flutter/material.dart';
-import 'qr_code_screen.dart';
+import 'package:flutter_icreserva/controllers/logout_controller.dart';
+import 'package:flutter_icreserva/screens/login_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../controllers/room_controller.dart';
+import '../models/room.dart';
+import './room_detail_screen.dart';
+import './create_room_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      appBar: AppBar(
-        title: const Text(
-          'ICReserva',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final roomsAsync = ref.watch(roomsProvider);
+
+  return Scaffold(
+    backgroundColor: const Color(0xFFF5F5F5),
+
+    floatingActionButton: FloatingActionButton(
+      backgroundColor: Colors.black,
+      child: const Icon(Icons.add, color: Colors.white),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const CreateRoomScreen(),
           ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 800),
-          padding: const EdgeInsets.all(24),
-          child: GridView.count(
-            crossAxisCount: 2,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            shrinkWrap: true,
+        );
+      },
+    ),
+
+  body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
             children: [
-              _MenuCard(
-                icon: Icons.qr_code_2,
-                title: 'QR Code das Salas',
-                description: 'Gerar QR Code para cada sala',
-                color: Colors.black,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const QrCodeScreen(),
+              const SizedBox(height: 12),
+
+              // --------- HEADER/NAV ----------
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Salas Disponíveis",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
                     ),
-                  );
-                },
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      await ref.read(logoutControllerProvider.notifier).logout();
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (_) => const LoginScreen()),
+                      );
+                    },
+                    child: const CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.black,
+                      child: Icon(Icons.person, color: Colors.white),
+                    ),
+                  ),
+                ],
               ),
-              _MenuCard(
-                icon: Icons.meeting_room,
-                title: 'Salas',
-                description: 'Gerenciar salas disponíveis',
-                color: Colors.blue.shade700,
-                onTap: () {
-                  // TODO: Navegar para tela de salas
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Tela de salas em desenvolvimento'),
+
+              const SizedBox(height: 20),
+
+              // --------- BOTÕES SUPERIORES ----------
+              Row(
+                children: [
+                  Expanded(
+                    child: _topButton(
+                      label: "Escanear QR Code",
+                      icon: Icons.qr_code_scanner,
+                      onTap: () {},
                     ),
-                  );
-                },
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _topButton(
+                      label: "Ver Mapa",
+                      icon: Icons.map,
+                      onTap: () {},
+                    ),
+                  ),
+                ],
               ),
-              _MenuCard(
-                icon: Icons.calendar_today,
-                title: 'Reservas',
-                description: 'Visualizar e gerenciar reservas',
-                color: Colors.green.shade700,
-                onTap: () {
-                  // TODO: Navegar para tela de reservas
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Tela de reservas em desenvolvimento'),
-                    ),
-                  );
-                },
-              ),
-              _MenuCard(
-                icon: Icons.person,
-                title: 'Perfil',
-                description: 'Configurações e perfil do usuário',
-                color: Colors.purple.shade700,
-                onTap: () {
-                  // TODO: Navegar para tela de perfil
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Tela de perfil em desenvolvimento'),
-                    ),
-                  );
-                },
+
+              const SizedBox(height: 20),
+
+              Expanded(
+                child: roomsAsync.when(
+                  loading: () => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  error: (err, _) => Center(
+                    child: Text("Erro ao carregar salas:\n$err"),
+                  ),
+                  data: (rooms) {
+                    if (rooms.isEmpty) {
+                      return const Center(
+                          child: Text("Nenhuma sala cadastrada."));
+                    }
+
+                    return RefreshIndicator(
+                      onRefresh: () async {
+                        await ref
+                            .read(roomsProvider.notifier)
+                            .refreshRooms();
+                      },
+                      child: ListView.builder(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        itemCount: rooms.length,
+                        itemBuilder: (_, i) => _RoomCard(rooms[i]),
+                      ),
+                    );
+                  },
+                ),
               ),
             ],
           ),
@@ -92,74 +124,139 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+
+  // Botões superiores
+  Widget _topButton({
+    required String label,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 20),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-class _MenuCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String description;
-  final Color color;
-  final VoidCallback onTap;
+class _RoomCard extends StatelessWidget {
+  final Room room;
 
-  const _MenuCard({
-    required this.icon,
-    required this.title,
-    required this.description,
-    required this.color,
-    required this.onTap,
-  });
+  const _RoomCard(this.room);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: () {
+        // navega para a tela de detalhes passando o objeto room
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => RoomDetailScreen(room: room)),
+        );
+      },
       borderRadius: BorderRadius.circular(16),
       child: Container(
-        padding: const EdgeInsets.all(24),
+        margin: const EdgeInsets.only(bottom: 14),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 6,
+              offset: const Offset(0, 3),
             ),
           ],
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 64,
-              height: 64,
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                icon,
-                color: Colors.white,
-                size: 32,
-              ),
+            // Nome  Tag
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  room.name,
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+
+                // TAG de status
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: room.available
+                        ? Colors.green.shade50
+                        : Colors.red.shade50,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    room.available ? "Disponível" : "Reservada",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color:
+                          room.available ? Colors.green : Colors.red,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
+
+            const SizedBox(height: 6),
+
+            // Localização
             Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              description,
+              room.location,
               style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade600,
+                color: Colors.grey.shade700,
+                fontSize: 13,
               ),
-              textAlign: TextAlign.center,
+            ),
+
+            const SizedBox(height: 8),
+
+            // Capacidade + Descrição
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.people_alt,
+                    size: 16, color: Colors.grey.shade600),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    "${room.capacity} pessoas\n${room.description}",
+                    style: TextStyle(
+                      color: Colors.grey.shade700,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
