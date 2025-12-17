@@ -65,11 +65,13 @@ class ReservationsListScreen extends ConsumerWidget {
                     reservation: reservation,
                     roomName: 'Carregando...',
                     onDelete: () => _confirmDelete(context, ref, reservation.id),
+                    onEdit: () => _showEditDialog(context, ref, reservation, 'Carregando...'),
                   ),
                   error: (error, stackTrace) => _ReservationCard(
                     reservation: reservation,
                     roomName: 'Erro ao carregar',
                     onDelete: () => _confirmDelete(context, ref, reservation.id),
+                    onEdit: () => _showEditDialog(context, ref, reservation, 'Erro ao carregar'),
                   ),
                   data: (rooms) {
                     final room = rooms.firstWhere(
@@ -80,6 +82,7 @@ class ReservationsListScreen extends ConsumerWidget {
                       reservation: reservation,
                       roomName: room.name,
                       onDelete: () => _confirmDelete(context, ref, reservation.id),
+                      onEdit: () => _showEditDialog(context, ref, reservation, room.name),
                     );
                   },
                 );
@@ -145,17 +148,213 @@ class ReservationsListScreen extends ConsumerWidget {
       }
     }
   }
+
+  Future<void> _showEditDialog(
+    BuildContext context,
+    WidgetRef ref,
+    Reservation reservation,
+    String roomName,
+  ) async {
+    final dateFormat = DateFormat('dd/MM/yyyy');
+
+    final responsavelController = TextEditingController(text: reservation.responsavel);
+    final observacoesController = TextEditingController(text: reservation.observacoes);
+    
+    DateTime selectedDate = reservation.startTime;
+    TimeOfDay selectedStartTime = TimeOfDay.fromDateTime(reservation.startTime);
+    TimeOfDay selectedEndTime = TimeOfDay.fromDateTime(reservation.endTime);
+
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16),
+          title: const Text('Editar Reserva'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Sala (read-only)
+                Text(
+                  'Sala: $roomName',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                
+                // Data
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.calendar_today),
+                  title: Text(dateFormat.format(selectedDate)),
+                  subtitle: const Text('Data'),
+                  onTap: () async {
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate: selectedDate,
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime.now().add(const Duration(days: 365)),
+                    );
+                    if (picked != null) {
+                      setState(() {
+                        selectedDate = picked;
+                      });
+                    }
+                  },
+                ),
+                
+                // Horário de início
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.access_time),
+                  title: Text(selectedStartTime.format(context)),
+                  subtitle: const Text('Horário de Início'),
+                  onTap: () async {
+                    final picked = await showTimePicker(
+                      context: context,
+                      initialTime: selectedStartTime,
+                    );
+                    if (picked != null) {
+                      setState(() {
+                        selectedStartTime = picked;
+                      });
+                    }
+                  },
+                ),
+                
+                // Horário de fim
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.access_time),
+                  title: Text(selectedEndTime.format(context)),
+                  subtitle: const Text('Horário de Fim'),
+                  onTap: () async {
+                    final picked = await showTimePicker(
+                      context: context,
+                      initialTime: selectedEndTime,
+                    );
+                    if (picked != null) {
+                      setState(() {
+                        selectedEndTime = picked;
+                      });
+                    }
+                  },
+                ),
+                
+                const SizedBox(height: 16),
+                
+                // Responsável
+                TextField(
+                  controller: responsavelController,
+                  decoration: const InputDecoration(
+                    labelText: 'Responsável',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.person),
+                  ),
+                ),
+                
+                const SizedBox(height: 16),
+                
+                // Observações
+                TextField(
+                  controller: observacoesController,
+                  decoration: const InputDecoration(
+                    labelText: 'Observações',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.notes),
+                  ),
+                  maxLines: 3,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Combina data com horários
+                final startDateTime = DateTime(
+                  selectedDate.year,
+                  selectedDate.month,
+                  selectedDate.day,
+                  selectedStartTime.hour,
+                  selectedStartTime.minute,
+                );
+                
+                final endDateTime = DateTime(
+                  selectedDate.year,
+                  selectedDate.month,
+                  selectedDate.day,
+                  selectedEndTime.hour,
+                  selectedEndTime.minute,
+                );
+                
+                Navigator.of(context).pop({
+                  'start_time': startDateTime.toIso8601String(),
+                  'end_time': endDateTime.toIso8601String(),
+                  'responsavel': responsavelController.text,
+                  'observacoes': observacoesController.text,
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Salvar'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (result != null && context.mounted) {
+      try {
+        await ref
+            .read(reservationsProvider.notifier)
+            .updateReservation(reservation.id, result);
+        
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Reserva atualizada com sucesso!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Erro ao atualizar reserva: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    }
+    
+    responsavelController.dispose();
+    observacoesController.dispose();
+  }
 }
 
 class _ReservationCard extends StatelessWidget {
   final Reservation reservation;
   final String roomName;
   final VoidCallback onDelete;
+  final VoidCallback onEdit;
 
   const _ReservationCard({
     required this.reservation,
     required this.roomName,
     required this.onDelete,
+    required this.onEdit,
   });
 
   @override
@@ -165,12 +364,30 @@ class _ReservationCard extends StatelessWidget {
 
     return Dismissible(
       key: Key(reservation.id),
-      direction: DismissDirection.endToStart,
-      confirmDismiss: (_) async {
-        onDelete();
+      direction: DismissDirection.horizontal,
+      confirmDismiss: (direction) async {
+        if (direction == DismissDirection.endToStart) {
+          onDelete();
+        } else if (direction == DismissDirection.startToEnd) {
+          onEdit();
+        }
         return false; // Não remove automaticamente, apenas mostra o dialog
       },
       background: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(left: 20),
+        child: const Icon(
+          Icons.edit,
+          color: Colors.white,
+          size: 28,
+        ),
+      ),
+      secondaryBackground: Container(
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
           color: Colors.red,
@@ -188,12 +405,12 @@ class _ReservationCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: const Color(0xFFE8E8E8),
+          color: const Color(0xFFF8F8F8),
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 4,
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 8,
               offset: const Offset(0, 2),
             ),
           ],
