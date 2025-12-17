@@ -14,25 +14,21 @@ class EditRoomScreen extends ConsumerStatefulWidget {
 
 class _EditRoomScreenState extends ConsumerState<EditRoomScreen> {
   final _formKey = GlobalKey<FormState>();
+
   late TextEditingController _locationController;
   late TextEditingController _descriptionController;
+
   late bool _isAvailable;
-  late bool _hasAC;
-  late bool _hasTV;
-  late bool _hasProjector;
-  late bool _hasComputers;
   bool _isLoading = false;
+  bool _isDeleting = false;
 
   @override
   void initState() {
     super.initState();
     _locationController = TextEditingController(text: widget.room.location);
-    _descriptionController = TextEditingController(text: widget.room.description);
+    _descriptionController =
+        TextEditingController(text: widget.room.description);
     _isAvailable = widget.room.available;
-    _hasAC = false;
-    _hasTV = false;
-    _hasProjector = false;
-    _hasComputers = false;
   }
 
   @override
@@ -48,7 +44,8 @@ class _EditRoomScreenState extends ConsumerState<EditRoomScreen> {
       appBar: AppBar(
         title: const Text('Editar Sala'),
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        foregroundColor:
+Colors.black,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -63,7 +60,6 @@ class _EditRoomScreenState extends ConsumerState<EditRoomScreen> {
             key: _formKey,
             child: Column(
               children: [
-                // Bloco principal
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
@@ -90,22 +86,22 @@ class _EditRoomScreenState extends ConsumerState<EditRoomScreen> {
                             ),
                           ),
                           const SizedBox(width: 16),
-                          Column(
+                          const Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
+                              Text(
                                 'Informações da Sala',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
-                              const SizedBox(height: 4),
+                              SizedBox(height: 4),
                               Text(
                                 'Atualize os dados da sala',
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: Colors.grey.shade600,
+                                  color: Colors.grey,
                                 ),
                               ),
                             ],
@@ -115,13 +111,12 @@ class _EditRoomScreenState extends ConsumerState<EditRoomScreen> {
 
                       const SizedBox(height: 24),
 
-                      // Nome da Sala (desabilitado)
-                      Text(
-                        'Nome da Sala*',
+                      // Nome da sala
+                      const Text(
+                        'Nome da Sala',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade800,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -133,68 +128,46 @@ class _EditRoomScreenState extends ConsumerState<EditRoomScreen> {
                           fillColor: Colors.grey.shade200,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                         ),
                       ),
 
                       const SizedBox(height: 16),
 
                       // Localização
-                      Text(
+                      const Text(
                         'Localização*',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade800,
                         ),
                       ),
                       const SizedBox(height: 8),
                       TextFormField(
                         controller: _locationController,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Informe a localização';
+                          }
+                          return null;
+                        },
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.grey.shade100,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Colors.black, width: 1),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                         ),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Por favor, informe a localização';
-                          }
-                          return null;
-                        },
                       ),
 
                       const SizedBox(height: 16),
 
                       // Descrição
-                      Text(
+                      const Text(
                         'Descrição',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade800,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -206,167 +179,50 @@ class _EditRoomScreenState extends ConsumerState<EditRoomScreen> {
                           fillColor: Colors.grey.shade100,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Colors.black, width: 1),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                         ),
                       ),
 
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 16),
 
                       // Status
-                      Text(
+                      const Text(
                         'Status',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade800,
                         ),
                       ),
                       const SizedBox(height: 8),
                       DropdownButtonFormField<bool>(
-                        initialValue: _isAvailable,
+                        value: _isAvailable,
+                        items: const [
+                          DropdownMenuItem(
+                            value: true,
+                            child: Text('Disponível'),
+                          ),
+                          DropdownMenuItem(
+                            value: false,
+                            child: Text('Indisponível'),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() => _isAvailable = value);
+                          }
+                        },
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.grey.shade100,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Colors.black, width: 1),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                         ),
-                        items: [
-                          DropdownMenuItem(
-                            value: true,
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 12,
-                                  height: 12,
-                                  decoration: BoxDecoration(
-                                    color: Colors.green,
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                const Text('Disponível'),
-                              ],
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: false,
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 12,
-                                  height: 12,
-                                  decoration: BoxDecoration(
-                                    color: Colors.red,
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                const Text('Indisponível'),
-                              ],
-                            ),
-                          ),
-                        ],
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() {
-                              _isAvailable = value;
-                            });
-                          }
-                        },
                       ),
 
                       const SizedBox(height: 24),
 
-                      // Recursos Disponíveis
-                      Text(
-                        'Recursos disponíveis',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade800,
-                        ),
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      // Ar-condicionado
-                      _buildResourceToggle(
-                        title: 'Ar-condicionado',
-                        subtitle: 'Sistema de climatização',
-                        value: _hasAC,
-                        onChanged: (value) {
-                          setState(() {
-                            _hasAC = value;
-                          });
-                        },
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      // TV
-                      _buildResourceToggle(
-                        title: 'TV',
-                        subtitle: 'Televisor Disponível',
-                        value: _hasTV,
-                        onChanged: (value) {
-                          setState(() {
-                            _hasTV = value;
-                          });
-                        },
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      // Projetor
-                      _buildResourceToggle(
-                        title: 'Projetor',
-                        subtitle: 'Projetor multimídia',
-                        value: _hasProjector,
-                        onChanged: (value) {
-                          setState(() {
-                            _hasProjector = value;
-                          });
-                        },
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      // Computadores
-                      _buildResourceToggle(
-                        title: 'Computadores',
-                        subtitle: 'Computadores de mesa',
-                        value: _hasComputers,
-                        onChanged: (value) {
-                          setState(() {
-                            _hasComputers = value;
-                          });
-                        },
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      // Botão Salvar
+                      // Salvar
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -383,25 +239,61 @@ class _EditRoomScreenState extends ConsumerState<EditRoomScreen> {
                                   height: 20,
                                   width: 20,
                                   child: CircularProgressIndicator(
-                                    strokeWidth: 2,
                                     color: Colors.white,
+                                    strokeWidth: 2,
                                   ),
                                 )
                               : const Text(
                                   'Salvar alterações',
                                   style: TextStyle(
-                                    color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
+                                    color: Colors.white,
                                   ),
                                 ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 80),
+
+                      // EXCLUIR SALA                   
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.red,
+                            side: const BorderSide(color: Colors.red),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          onPressed: _isDeleting ? null : _confirmDeleteRoom,
+                          icon: _isDeleting
+                              ? const SizedBox(
+                                  height: 18,
+                                  width: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.red,
+                                  ),
+                                )
+                              : const Icon(
+                                  Icons.delete_outline,
+                                  color: Colors.red,
+                                ),
+                          label: const Text(
+                            'Excluir sala',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-
-                const SizedBox(height: 20),
               ],
             ),
           ),
@@ -410,107 +302,99 @@ class _EditRoomScreenState extends ConsumerState<EditRoomScreen> {
     );
   }
 
-  Widget _buildResourceToggle({
-    required String title,
-    required String subtitle,
-    required bool value,
-    required Function(bool) onChanged,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                subtitle,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-            ],
-          ),
-          Switch(
-            value: value,
-            onChanged: onChanged,
-            activeColor: Colors.black,
-            activeTrackColor: Colors.black,
-            inactiveThumbColor: Colors.grey.shade400,
-            inactiveTrackColor: Colors.grey.shade300,
-          ),
-        ],
-      ),
-    );
-  }
-
   Future<void> _saveChanges() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
       final supabase = Supabase.instance.client;
 
-      // Se marcar como indisponível, cancelar reservas futuras/ativas
       if (!_isAvailable) {
         final nowIso = DateTime.now().toUtc().toIso8601String();
         await supabase
             .from('bookings')
             .update({'status': 'cancelled'})
             .eq('room_id', widget.room.id)
-            .gte('start_time', nowIso)
-            .neq('status', 'cancelled');
+            .gte('start_time', nowIso);
       }
 
-      final updates = {
+      await supabase.from('rooms').update({
         'location': _locationController.text.trim(),
         'description': _descriptionController.text.trim(),
         'available': _isAvailable,
-      };
+      }).eq('id', widget.room.id);
 
-      await supabase.from('rooms').update(updates).eq('id', widget.room.id);
-
-      // Atualizar provider de salas
       await ref.read(roomsProvider.notifier).refreshRooms();
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Sala atualizada com sucesso!')),
+          const SnackBar(content: Text('Sala atualizada com sucesso')),
         );
         Navigator.of(context).pop();
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao atualizar sala: $e')),
+          SnackBar(content: Text('Erro ao salvar: $e')),
         );
       }
     } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _confirmDeleteRoom() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Excluir sala'),
+        content: const Text(
+          'Essa ação não pode ser desfeita.\n'
+          'Todas as reservas dessa sala também serão excluídas.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Excluir'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await _deleteRoom();
+    }
+  }
+
+  Future<void> _deleteRoom() async {
+    setState(() => _isDeleting = true);
+
+    try {
+      await ref
+          .read(roomsProvider.notifier)
+          .deleteRoom(widget.room.id);
+
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Sala excluída com sucesso')),
+        );
+        Navigator.of(context).pop();
       }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao excluir sala: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isDeleting = false);
     }
   }
 }
+

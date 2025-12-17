@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_icreserva/controllers/logout_controller.dart';
 import 'package:flutter_icreserva/screens/login_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../controllers/room_controller.dart';
 import '../models/room.dart';
 import './room_detail_screen.dart';
@@ -22,7 +22,7 @@ class HomeScreen extends ConsumerWidget {
             children: [
               const SizedBox(height: 12),
 
-              // --------- HEADER ----------
+              // --------- HEADER/NAV ----------
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -33,28 +33,17 @@ class HomeScreen extends ConsumerWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-
-                  // _>>>>>>>BOTÃO DE SAIR
-                  InkWell(
+                  GestureDetector(
                     onTap: () async {
-                      await Supabase.instance.client.auth.signOut();
-
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                          builder: (_) => const LoginScreen(),
-                        ),
-                        (route) => false,
+                      await ref.read(logoutControllerProvider.notifier).logout();
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (_) => const LoginScreen()),
                       );
                     },
-                    borderRadius: BorderRadius.circular(20),
                     child: const CircleAvatar(
                       radius: 20,
                       backgroundColor: Colors.black,
-                      child: Icon(
-                        Icons.logout,
-                        color: Colors.white,
-                        size: 20,
-                      ),
+                      child: Icon(Icons.person, color: Colors.white),
                     ),
                   ),
                 ],
@@ -85,7 +74,6 @@ class HomeScreen extends ConsumerWidget {
 
               const SizedBox(height: 20),
 
-              // --------- LISTA DE SALAS ----------
               Expanded(
                 child: roomsAsync.when(
                   loading: () => const Center(
@@ -97,8 +85,7 @@ class HomeScreen extends ConsumerWidget {
                   data: (rooms) {
                     if (rooms.isEmpty) {
                       return const Center(
-                        child: Text("Nenhuma sala cadastrada."),
-                      );
+                          child: Text("Nenhuma sala cadastrada."));
                     }
 
                     return RefreshIndicator(
@@ -123,7 +110,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  // --------- BOTÕES SUPERIORES ----------
+  // Botões superiores
   Widget _topButton({
     required String label,
     required IconData icon,
@@ -158,7 +145,6 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-// --------- CARD DE SALA ----------
 class _RoomCard extends StatelessWidget {
   final Room room;
 
@@ -168,10 +154,9 @@ class _RoomCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        // navega para a tela de detalhes passando o objeto room
         Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => RoomDetailScreen(room: room),
-          ),
+          MaterialPageRoute(builder: (_) => RoomDetailScreen(room: room)),
         );
       },
       borderRadius: BorderRadius.circular(16),
@@ -192,6 +177,7 @@ class _RoomCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Nome  Tag
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -202,6 +188,8 @@ class _RoomCard extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
+
+                // TAG de status
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -223,7 +211,10 @@ class _RoomCard extends StatelessWidget {
                 ),
               ],
             ),
+
             const SizedBox(height: 6),
+
+            // Localização
             Text(
               room.location,
               style: TextStyle(
@@ -231,7 +222,10 @@ class _RoomCard extends StatelessWidget {
                 fontSize: 13,
               ),
             ),
+
             const SizedBox(height: 8),
+
+            // Capacidade + Descrição
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
