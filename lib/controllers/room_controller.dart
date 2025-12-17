@@ -57,4 +57,21 @@ class RoomController extends AsyncNotifier<List<Room>> {
       throw Exception('Erro ao excluir sala: $e');
     }
   }
+
+  Future<void> createRoom(Room room) async {
+  try {
+    await _supabase.from('rooms').insert({
+      'name': room.name,
+      'location': room.location,
+      'capacity': room.capacity,
+      'description': room.description,
+      'available': room.available,
+    });
+
+    await refreshRooms();
+  } catch (e) {
+    throw Exception('Erro ao criar sala: $e');
+  }
+}
+
 }

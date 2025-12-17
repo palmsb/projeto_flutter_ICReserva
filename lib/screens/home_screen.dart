@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controllers/room_controller.dart';
 import '../models/room.dart';
 import './room_detail_screen.dart';
+import './create_room_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -13,9 +14,23 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final roomsAsync = ref.watch(roomsProvider);
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      body: SafeArea(
+  return Scaffold(
+    backgroundColor: const Color(0xFFF5F5F5),
+
+    floatingActionButton: FloatingActionButton(
+      backgroundColor: Colors.black,
+      child: const Icon(Icons.add, color: Colors.white),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const CreateRoomScreen(),
+          ),
+        );
+      },
+    ),
+
+  body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
