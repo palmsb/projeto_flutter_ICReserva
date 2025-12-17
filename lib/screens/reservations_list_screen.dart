@@ -66,7 +66,7 @@ class ReservationsListScreen extends ConsumerWidget {
                     roomName: 'Carregando...',
                     onDelete: () => _confirmDelete(context, ref, reservation.id),
                   ),
-                  error: (_, __) => _ReservationCard(
+                  error: (error, stackTrace) => _ReservationCard(
                     reservation: reservation,
                     roomName: 'Erro ao carregar',
                     onDelete: () => _confirmDelete(context, ref, reservation.id),
@@ -192,7 +192,7 @@ class _ReservationCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),

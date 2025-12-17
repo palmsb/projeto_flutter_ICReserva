@@ -15,31 +15,15 @@ enum ReservationStatus {
 }
 
 @freezed
-@Assert(
-  'startTime.isBefore(endTime)',
-  'Start time must be before end time',
-)
 class Reservation with _$Reservation {
   const factory Reservation({
     required String id,
-
-    @JsonKey(name: 'room_id')
-    required String roomId,
-
-    @JsonKey(name: 'user_id')
-    required String userId,
-
-    @JsonKey(name: 'start_time')
-    required DateTime startTime,
-
-    @JsonKey(name: 'end_time')
-    required DateTime endTime,
-
-    @Default(ReservationStatus.pending)
-    ReservationStatus status,
-
-    @JsonKey(name: 'created_at')
-    required DateTime createdAt,
+    @JsonKey(name: 'room_id') required String roomId,
+    @JsonKey(name: 'user_id') required String userId,
+    @JsonKey(name: 'start_time') required DateTime startTime,
+    @JsonKey(name: 'end_time') required DateTime endTime,
+    @Default(ReservationStatus.pending) ReservationStatus status,
+    @JsonKey(name: 'created_at') required DateTime createdAt,
 
     @Default('')
     String responsavel,

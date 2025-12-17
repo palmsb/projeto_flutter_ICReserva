@@ -203,7 +203,7 @@ class _RoomCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       color: isSelected
-                          ? Colors.white.withOpacity(0.8)
+                          ? Colors.white.withValues(alpha: 0.8)
                           : Colors.black54,
                     ),
                   ),
@@ -214,7 +214,7 @@ class _RoomCard extends StatelessWidget {
                         Icons.people_outline,
                         size: 16,
                         color: isSelected
-                            ? Colors.white.withOpacity(0.8)
+                            ? Colors.white.withValues(alpha: 0.8)
                             : Colors.black54,
                       ),
                       const SizedBox(width: 4),
@@ -223,7 +223,7 @@ class _RoomCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           color: isSelected
-                              ? Colors.white.withOpacity(0.8)
+                              ? Colors.white.withValues(alpha: 0.8)
                               : Colors.black54,
                         ),
                       ),
@@ -268,7 +268,7 @@ class _QrCodeDisplay extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withValues(alpha: 0.08),
               blurRadius: 20,
               offset: const Offset(0, 6),
             ),
@@ -338,14 +338,7 @@ class _QrCodeDisplay extends StatelessWidget {
                     label: 'Descrição',
                     value: room.description,
                   ),
-                  if (room.amenities.isNotEmpty) ...[
-                    const SizedBox(height: 12),
-                    _InfoRow(
-                      icon: Icons.star_outline,
-                      label: 'Comodidades',
-                      value: room.amenities.join(', '),
-                    ),
-                  ],
+
                 ],
               ),
             ),

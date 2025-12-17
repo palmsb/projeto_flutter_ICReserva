@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/room.dart';
-import 'room_controller.dart';
 
 /// Notifier para a sala selecionada
 class SelectedRoomNotifier extends Notifier<Room?> {
