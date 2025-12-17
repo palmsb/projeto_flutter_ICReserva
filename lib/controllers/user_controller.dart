@@ -20,9 +20,11 @@ class UserController extends AsyncNotifier<AppUser.User?> {
       final authUser = _supabase.auth.currentUser;
       if (authUser == null) return null;
       final data = await _supabase.from('profiles').select().eq('id', authUser.id).maybeSingle();
+      print('DEBUG profiles data: $data'); // Debug temporário
       if (data == null) return null;
       return AppUser.User.fromJson(Map<String, dynamic>.from(data));
     } catch (e) {
+      print('DEBUG erro: $e'); // Debug temporário
       throw Exception('Erro ao buscar perfil do usuário: $e');
     }
   }

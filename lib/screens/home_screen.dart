@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icreserva/controllers/logout_controller.dart';
 import 'package:flutter_icreserva/screens/login_screen.dart';
+import 'package:flutter_icreserva/screens/profile_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controllers/room_controller.dart';
 import '../models/room.dart';
@@ -33,18 +34,36 @@ class HomeScreen extends ConsumerWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () async {
-                      await ref.read(logoutControllerProvider.notifier).logout();
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (_) => const LoginScreen()),
-                      );
-                    },
-                    child: const CircleAvatar(
-                      radius: 20,
-                      backgroundColor: Colors.black,
-                      child: Icon(Icons.person, color: Colors.white),
-                    ),
+                  Row(
+                    children: [
+                      // Botão de Perfil
+                      IconButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const ProfileScreen(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.person),
+                        tooltip: 'Perfil',
+                      ),
+                      const SizedBox(width: 4),
+                      // Botão de Logout
+                      GestureDetector(
+                        onTap: () async {
+                          await ref.read(logoutControllerProvider.notifier).logout();
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (_) => const LoginScreen()),
+                          );
+                        },
+                        child: const CircleAvatar(
+                          radius: 20,
+                          backgroundColor: Colors.black,
+                          child: Icon(Icons.logout, color: Colors.white),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
