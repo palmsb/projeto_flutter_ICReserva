@@ -6,6 +6,7 @@ import '../controllers/room_controller.dart';
 import '../models/room.dart';
 import './room_detail_screen.dart';
 import './create_room_screen.dart';
+import './reservations_list_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -79,9 +80,16 @@ class HomeScreen extends ConsumerWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: _topButton(
-                      label: "Ver Mapa",
-                      icon: Icons.map,
-                      onTap: () {},
+                      label: "Listar Reservas",
+                      icon: Icons.list_alt,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ReservationsListScreen(),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],
