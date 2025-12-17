@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controllers/room_controller.dart';
 import '../models/room.dart';
 import './room_detail_screen.dart';
+import './create_room_screen.dart';
+import './reservations_list_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -14,9 +16,23 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final roomsAsync = ref.watch(roomsProvider);
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      body: SafeArea(
+  return Scaffold(
+    backgroundColor: const Color(0xFFF5F5F5),
+
+    floatingActionButton: FloatingActionButton(
+      backgroundColor: Colors.black,
+      child: const Icon(Icons.add, color: Colors.white),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const CreateRoomScreen(),
+          ),
+        );
+      },
+    ),
+
+  body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
@@ -37,6 +53,7 @@ class HomeScreen extends ConsumerWidget {
                   GestureDetector(
                     onTap: () async {
                       await ref.read(logoutControllerProvider.notifier).logout();
+                      // ignore: use_build_context_synchronously
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (_) => const LoginScreen()),
                       );
@@ -71,9 +88,16 @@ class HomeScreen extends ConsumerWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: _topButton(
-                      label: "Ver Mapa",
-                      icon: Icons.map,
-                      onTap: () {},
+                      label: "Listar Reservas",
+                      icon: Icons.list_alt,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ReservationsListScreen(),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],
@@ -175,6 +199,7 @@ class _RoomCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
+              // ignore: deprecated_member_use
               color: Colors.black.withOpacity(0.05),
               blurRadius: 6,
               offset: const Offset(0, 3),

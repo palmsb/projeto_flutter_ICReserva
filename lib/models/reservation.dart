@@ -21,13 +21,15 @@ class Reservation with _$Reservation {
     @JsonKey(name: 'room_id') required String roomId,
     @JsonKey(name: 'user_id') required String userId,
     @JsonKey(name: 'start_time') required DateTime startTime,
-    @JsonKey(name: 'end_time')
-    @Assert('startTime.isBefore(endTime)', 'Start time must be before end time')
-    required DateTime endTime,
+    @JsonKey(name: 'end_time') required DateTime endTime,
     @Default(ReservationStatus.pending) ReservationStatus status,
     @JsonKey(name: 'created_at') required DateTime createdAt,
-    @Default('') String responsavel,
-    @Default('') String observacoes,
+
+    @Default('')
+    String responsavel,
+
+    @Default('')
+    String observacoes,
   }) = _Reservation;
 
   factory Reservation.fromJson(Map<String, dynamic> json) =>

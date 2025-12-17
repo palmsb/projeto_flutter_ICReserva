@@ -1,27 +1,27 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../models/user.dart' as AppUser;
+import '../models/user.dart' as app_user;
 
 final userProvider =
-    AsyncNotifierProvider<UserController, AppUser.User?>(() => UserController());
+    AsyncNotifierProvider<UserController, app_user.User?>(() => UserController());
 
-class UserController extends AsyncNotifier<AppUser.User?> {
+class UserController extends AsyncNotifier<app_user.User?> {
   late final SupabaseClient _supabase;
 
   @override
-  FutureOr<AppUser.User?> build() {
+  FutureOr<app_user.User?> build() {
     _supabase = Supabase.instance.client;
     return _fetchCurrentProfile();
   }
 
-  Future<AppUser.User?> _fetchCurrentProfile() async {
+  Future<app_user.User?> _fetchCurrentProfile() async {
     try {
       final authUser = _supabase.auth.currentUser;
       if (authUser == null) return null;
       final data = await _supabase.from('profiles').select().eq('id', authUser.id).maybeSingle();
       if (data == null) return null;
-      return AppUser.User.fromJson(Map<String, dynamic>.from(data));
+      return app_user.User.fromJson(Map<String, dynamic>.from(data));
     } catch (e) {
       throw Exception('Erro ao buscar perfil do usuário: $e');
     }
@@ -31,11 +31,11 @@ class UserController extends AsyncNotifier<AppUser.User?> {
     state = await AsyncValue.guard(() => _fetchCurrentProfile());
   }
 
-  Future<AppUser.User> createProfile(Map<String, dynamic> payload) async {
+  Future<app_user.User> createProfile(Map<String, dynamic> payload) async {
     try {
       // payload deve conter id = auth user id, name, role (opcional)
       final data = await _supabase.from('profiles').insert(payload).select().single();
-      final user = AppUser.User.fromJson(Map<String, dynamic>.from(data));
+      final user = app_user.User.fromJson(Map<String, dynamic>.from(data));
       state = AsyncValue.data(user);
       return user;
     } catch (e) {
@@ -43,7 +43,7 @@ class UserController extends AsyncNotifier<AppUser.User?> {
     }
   }
 
-  Future<AppUser.User?> ensureProfile({String? name, String role = 'estudante'}) async {
+  Future<app_user.User?> ensureProfile({String? name, String role = 'estudante'}) async {
     try {
       final authUser = _supabase.auth.currentUser;
       if (authUser == null) return null;
@@ -61,10 +61,10 @@ class UserController extends AsyncNotifier<AppUser.User?> {
       throw Exception('Erro ao garantir/criar perfil: $e');
     }
   }
-  Future<AppUser.User> updateProfile(String id, Map<String, dynamic> changes) async {
+  Future<app_user.User> updateProfile(String id, Map<String, dynamic> changes) async {
     try {
       final data = await _supabase.from('profiles').update(changes).eq('id', id).select().single();
-      final user = AppUser.User.fromJson(Map<String, dynamic>.from(data));
+      final user = app_user.User.fromJson(Map<String, dynamic>.from(data));
       state = AsyncValue.data(user);
       return user;
     } catch (e) {
