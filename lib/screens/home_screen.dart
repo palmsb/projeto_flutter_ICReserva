@@ -52,6 +52,7 @@ class HomeScreen extends ConsumerWidget {
                   GestureDetector(
                     onTap: () async {
                       await ref.read(logoutControllerProvider.notifier).logout();
+                      // ignore: use_build_context_synchronously
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (_) => const LoginScreen()),
                       );
@@ -191,6 +192,7 @@ class _RoomCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
+              // ignore: deprecated_member_use
               color: Colors.black.withOpacity(0.05),
               blurRadius: 6,
               offset: const Offset(0, 3),
