@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/room.dart';
 import '../controllers/reservation_controller.dart';
+import '../controllers/room_controller.dart';
 import '../screens/login_screen.dart';
+import '../screens/new_reservation_screen.dart';
+import '../screens/edit_room_screen.dart';
 
 class RoomDetailScreen extends ConsumerWidget {
   final Room room;
@@ -11,24 +14,44 @@ class RoomDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final available = room.available ?? true;
+    final roomsAsync = ref.watch(roomsProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Detalhes da Sala'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+    return roomsAsync.when(
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
       ),
-      backgroundColor: const Color(0xFFF5F5F5),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Column(
+      error: (err, stack) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Detalhes da Sala'),
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          elevation: 0,
+        ),
+        body: Center(child: Text('Erro ao carregar sala: $err')),
+      ),
+      data: (rooms) {
+        final currentRoom = rooms.firstWhere(
+          (r) => r.id == room.id,
+          orElse: () => room,
+        );
+        final available = currentRoom.available;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Detalhes da Sala'),
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+          backgroundColor: const Color(0xFFF5F5F5),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Column(
             children: [
               // Card principal
               Container(
@@ -47,7 +70,7 @@ class RoomDetailScreen extends ConsumerWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            room.name,
+                            currentRoom.name,
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w700,
@@ -94,7 +117,7 @@ class RoomDetailScreen extends ConsumerWidget {
                           ),
                           const SizedBox(width: 12),
                           Text(
-                            '${room.capacity ?? 0} pessoas',
+                            '${currentRoom.capacity} pessoas',
                             style: TextStyle(color: Colors.grey.shade800, fontSize: 14, fontWeight: FontWeight.w600),
                           ),
                         ],
@@ -124,7 +147,7 @@ class RoomDetailScreen extends ConsumerWidget {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              room.location ?? '—',
+                              currentRoom.location,
                               style: TextStyle(color: Colors.grey.shade800, fontSize: 14, fontWeight: FontWeight.w600),
                             ),
                           ),
@@ -135,8 +158,8 @@ class RoomDetailScreen extends ConsumerWidget {
                     const SizedBox(height: 12),
 
                     // descrição
-                    if ((room.description ?? '').isNotEmpty)
-                      Text(room.description ?? '', style: TextStyle(color: Colors.grey.shade700)),
+                    if ((currentRoom.description ?? '').isNotEmpty)
+                      Text(currentRoom.description ?? '', style: TextStyle(color: Colors.grey.shade700)),
 
                     const SizedBox(height: 18),
 
@@ -164,7 +187,7 @@ class RoomDetailScreen extends ConsumerWidget {
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
-                        onPressed: available ? () => _onReserve(context, ref) : null,
+                        onPressed: available ? () => _onReserve(context, ref, currentRoom) : null,
                         child: const Text('Reservar Sala', style: TextStyle(color: Colors.white, fontSize: 16)),
                       ),
                     ),
@@ -185,7 +208,13 @@ class RoomDetailScreen extends ConsumerWidget {
                             icon: const Icon(Icons.edit, color: Colors.black),
                             label: const Text('Editar Sala', style: TextStyle(color: Colors.black)),
                             onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Editar Sala — a implementar')));
+                              Navigator.of(context)
+                                  .push(
+                                    MaterialPageRoute(
+                                      builder: (_) => EditRoomScreen(room: currentRoom),
+                                    ),
+                                  )
+                                  .then((_) => ref.refresh(roomsProvider));
                             },
                           ),
                         ),
@@ -224,6 +253,8 @@ class RoomDetailScreen extends ConsumerWidget {
         ),
       ),
     );
+      },
+    );
   }
 
   Widget _resourceBlock(IconData icon, String title) {
@@ -253,7 +284,7 @@ class RoomDetailScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _onReserve(BuildContext context, WidgetRef ref) async {
+  Future<void> _onReserve(BuildContext context, WidgetRef ref, Room currentRoom) async {
     final supabase = Supabase.instance.client;
     final userId = supabase.auth.currentUser?.id;
     if (userId == null) {
@@ -261,25 +292,11 @@ class RoomDetailScreen extends ConsumerWidget {
       return;
     }
 
-    final now = DateTime.now().toUtc();
-    final payload = {
-      'room_id': room.id,
-      'user_id': userId,
-      'start_time': now.toIso8601String(),
-      'end_time': now.add(const Duration(hours: 1)).toIso8601String(),
-      'status': 'confirmed',
-    };
-
-    try {
-      await ref.read(reservationsProvider.notifier).createReservation(payload);
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Reserva criada com sucesso')));
-        Navigator.of(context).pop();
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro ao criar reserva: $e')));
-      }
-    }
+    // Navegar para a tela de nova reserva
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => NewReservationScreen(room: currentRoom),
+      ),
+    ).then((_) => ref.refresh(roomsProvider));
   }
 }

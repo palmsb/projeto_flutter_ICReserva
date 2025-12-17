@@ -11,12 +11,7 @@ class Room with _$Room {
     required String description,
     required int capacity,
     required String location,
-
-    /// Disponibilidade calculada pelo app (não vem do Supabase)
-    @JsonKey(ignore: true)
-    @Default(true)
-    bool available,
-
+    required bool available,
     @JsonKey(name: 'created_at')
     required DateTime createdAt,
   }) = _Room;
