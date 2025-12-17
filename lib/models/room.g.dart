@@ -12,6 +12,7 @@ _$RoomImpl _$$RoomImplFromJson(Map<String, dynamic> json) => _$RoomImpl(
   description: json['description'] as String,
   capacity: (json['capacity'] as num).toInt(),
   location: json['location'] as String,
+  available: json['available'] as bool,
   createdAt: DateTime.parse(json['created_at'] as String),
 );
 
@@ -22,5 +23,6 @@ Map<String, dynamic> _$$RoomImplToJson(_$RoomImpl instance) =>
       'description': instance.description,
       'capacity': instance.capacity,
       'location': instance.location,
+      'available': instance.available,
       'created_at': instance.createdAt.toIso8601String(),
     };

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icreserva/controllers/logout_controller.dart';
 import 'package:flutter_icreserva/screens/login_screen.dart';
+import 'package:flutter_icreserva/screens/qr_scanner_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controllers/room_controller.dart';
 import '../models/room.dart';
@@ -58,7 +59,13 @@ class HomeScreen extends ConsumerWidget {
                     child: _topButton(
                       label: "Escanear QR Code",
                       icon: Icons.qr_code_scanner,
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const QRScannerScreen(),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   const SizedBox(width: 10),
