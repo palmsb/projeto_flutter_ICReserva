@@ -7,6 +7,7 @@ import '../models/room.dart';
 import './room_detail_screen.dart';
 import './create_room_screen.dart';
 import './reservations_list_screen.dart';
+import './qr_scanner_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -95,7 +96,14 @@ class HomeScreen extends ConsumerWidget {
                     child: _topButton(
                       label: "Escanear QR Code",
                       icon: Icons.qr_code_scanner,
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const QrScannerScreen(),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   const SizedBox(width: 10),
