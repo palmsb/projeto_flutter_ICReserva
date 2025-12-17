@@ -26,9 +26,6 @@ mixin _$Room {
   String get description => throw _privateConstructorUsedError;
   int get capacity => throw _privateConstructorUsedError;
   String get location => throw _privateConstructorUsedError;
-
-  /// Disponibilidade calculada pelo app (não vem do Supabase)
-  @JsonKey(ignore: true)
   bool get available => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   DateTime get createdAt => throw _privateConstructorUsedError;
@@ -53,7 +50,7 @@ abstract class $RoomCopyWith<$Res> {
     String description,
     int capacity,
     String location,
-    @JsonKey(ignore: true) bool available,
+    bool available,
     @JsonKey(name: 'created_at') DateTime createdAt,
   });
 }
@@ -131,7 +128,7 @@ abstract class _$$RoomImplCopyWith<$Res> implements $RoomCopyWith<$Res> {
     String description,
     int capacity,
     String location,
-    @JsonKey(ignore: true) bool available,
+    bool available,
     @JsonKey(name: 'created_at') DateTime createdAt,
   });
 }
@@ -200,7 +197,7 @@ class _$RoomImpl implements _Room {
     required this.description,
     required this.capacity,
     required this.location,
-    @JsonKey(ignore: true) this.available = true,
+    required this.available,
     @JsonKey(name: 'created_at') required this.createdAt,
   });
 
@@ -217,10 +214,7 @@ class _$RoomImpl implements _Room {
   final int capacity;
   @override
   final String location;
-
-  /// Disponibilidade calculada pelo app (não vem do Supabase)
   @override
-  @JsonKey(ignore: true)
   final bool available;
   @override
   @JsonKey(name: 'created_at')
@@ -284,7 +278,7 @@ abstract class _Room implements Room {
     required final String description,
     required final int capacity,
     required final String location,
-    @JsonKey(ignore: true) final bool available,
+    required final bool available,
     @JsonKey(name: 'created_at') required final DateTime createdAt,
   }) = _$RoomImpl;
 
@@ -300,10 +294,7 @@ abstract class _Room implements Room {
   int get capacity;
   @override
   String get location;
-
-  /// Disponibilidade calculada pelo app (não vem do Supabase)
   @override
-  @JsonKey(ignore: true)
   bool get available;
   @override
   @JsonKey(name: 'created_at')
